@@ -107,10 +107,10 @@
     .safe-top { padding-top: max(12px, env(safe-area-inset-top)); }
     .safe-bottom { padding-bottom: max(16px, env(safe-area-inset-bottom)); }
     .outfit-slot { display: flex; align-items: center; justify-content: center; position: relative; touch-action: pan-y; min-width: 140px; }
-    .cutout-img { width: auto; height: auto; display: block; object-fit: contain; filter: drop-shadow(0 8px 14px rgba(0,0,0,0.13)); pointer-events: none; transition: transform 0.25s cubic-bezier(0.22,1,0.36,1); }
-    .cutout-top { max-height: 25dvh; max-width: 68vw; }
-    .cutout-pants { max-height: 32dvh; max-width: 64vw; }
-    .cutout-shoes { max-height: 14dvh; max-width: 52vw; }
+    .cutout-img { width: auto; display: block; object-fit: contain; filter: drop-shadow(0 8px 14px rgba(0,0,0,0.13)); pointer-events: none; transition: transform 0.25s cubic-bezier(0.22,1,0.36,1); }
+    .cutout-top { height: 26dvh; max-height: 26dvh; max-width: 64vw; }
+    .cutout-pants { height: 35dvh; max-height: 35dvh; max-width: 58vw; }
+    .cutout-shoes { height: 11.5dvh; max-height: 11.5dvh; max-width: 46vw; }
     .checkerboard { background-image: linear-gradient(45deg,#e5e7eb 25%,transparent 25%),linear-gradient(-45deg,#e5e7eb 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#e5e7eb 75%),linear-gradient(-45deg,transparent 75%,#e5e7eb 75%); background-size: 20px 20px; background-position: 0 0,0 10px,10px -10px,-10px 0; }
     .bg-range { -webkit-appearance: none; appearance: none; width: 100%; min-width: 0; height: 28px; background: transparent; cursor: pointer; display: block; }
     .bg-range::-webkit-slider-runnable-track { width: 100%; height: 6px; border-radius: 999px; background: #CBD5E1; }
@@ -121,11 +121,12 @@
 </head>
 <body translate="no" class="notranslate flex flex-col justify-between h-[100dvh] w-screen overflow-hidden">
 
-  <!-- Primera obertura: Dies de bugada -->
-  <div id="laundrySetupOverlay" class="hidden fixed inset-0 bg-[#F5F5F7] z-[60] flex flex-col items-center justify-center px-6 text-center">
-    <div class="w-full max-w-xs flex flex-col gap-5">
+  <!-- Configuració / Edició de dies de bugada -->
+  <div id="laundrySetupOverlay" class="hidden fixed inset-0 bg-[#F5F5F7] z-[80] flex flex-col items-center justify-center px-6 text-center">
+    <div class="w-full max-w-xs flex flex-col gap-5 relative">
+      <button type="button" id="cancelLaundryDaysBtn" aria-label="Tancar" class="hidden self-end w-8 h-8 rounded-full bg-white border border-slate-200 text-slate-600 font-bold shadow-sm">&times;</button>
       <div class="flex flex-col gap-1.5">
-        <h1 class="text-2xl font-bold tracking-tight text-slate-900">Benvinguda!</h1>
+        <h1 id="laundrySetupTitle" class="text-2xl font-bold tracking-tight text-slate-900">Benvinguda!</h1>
         <p class="text-sm text-slate-500">Quin dia o dies acostuma a estar llesta la bugada?</p>
       </div>
       <div class="grid grid-cols-2 gap-2.5 text-left">
@@ -215,7 +216,7 @@
 
   <input type="file" id="fileInput" accept="image/*" multiple class="hidden" />
 
-  <!-- Peces de roba tocant-se per veure el conjunt sencer -->
+  <!-- Peces de roba tocant-se i proporcionades -->
   <main class="flex-1 flex flex-col items-center justify-center px-4 overflow-hidden relative">
     <div id="outfitStack" class="flex flex-col items-center justify-center w-full">
       <div id="slot-top" data-category="top" class="outfit-slot z-30"><div class="slot-content flex items-center justify-center"></div></div>
@@ -234,10 +235,10 @@
     </button>
   </footer>
 
-  <!-- Etiquetatge / Edició de retall amb slider a sobre de la peça -->
-  <div id="taggingModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[75] flex items-end sm:items-center justify-center p-3">
-    <div class="bg-white w-full max-w-md rounded-3xl p-4 sm:p-5 shadow-2xl flex flex-col gap-2.5 max-h-[95dvh] overflow-y-auto">
-      <div class="flex items-center justify-between">
+  <!-- Finestra gran d'etiquetatge / edició de retall -->
+  <div id="taggingModal" class="hidden fixed inset-0 bg-black/55 backdrop-blur-sm z-[75] flex items-center justify-center p-2 sm:p-4">
+    <div class="bg-white w-full max-w-2xl h-[95dvh] max-h-[95dvh] rounded-3xl p-4 sm:p-6 shadow-2xl flex flex-col gap-3 overflow-hidden">
+      <div class="flex items-center justify-between shrink-0">
         <span id="tagProgressText" class="text-xs font-bold uppercase tracking-wider text-slate-400">Foto 1 de 1</span>
         <div class="flex items-center gap-3">
           <button type="button" id="skipPhotoBtn" class="text-xs font-semibold text-slate-500">Ometre</button>
@@ -245,26 +246,26 @@
         </div>
       </div>
 
-      <div id="tagProgressTrack" class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+      <div id="tagProgressTrack" class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden shrink-0">
         <div id="tagProgressBar" class="h-full bg-slate-900 transition-all duration-300" style="width:100%"></div>
       </div>
 
-      <!-- Previsualització amb el slider a sobre de la peça -->
-      <div class="relative w-full h-56 rounded-2xl checkerboard flex flex-col overflow-hidden border border-slate-200">
-        <div class="z-10 mx-2.5 mt-2.5 px-3 py-1.5 rounded-xl bg-white/95 backdrop-blur shadow-sm border border-slate-200/80 flex items-center gap-2.5">
+      <!-- Previsualització ampla amb slider a sobre -->
+      <div class="relative flex-1 min-h-[240px] w-full rounded-2xl checkerboard flex flex-col overflow-hidden border border-slate-200">
+        <div class="z-10 mx-3 mt-3 px-3 py-1.5 rounded-xl bg-white/95 backdrop-blur shadow-sm border border-slate-200/80 flex items-center gap-2.5 shrink-0">
           <span class="text-[11px] font-bold text-slate-600 shrink-0">Fons</span>
           <input type="range" id="toleranceSlider" min="0" max="125" value="48" class="bg-range flex-1" />
           <span id="toleranceValueText" class="text-[11px] font-bold text-slate-800 w-7 text-right shrink-0">48</span>
         </div>
 
-        <div class="relative flex-1 w-full min-h-0 flex items-center justify-center p-2 touch-none">
+        <div class="relative flex-1 w-full min-h-0 flex items-center justify-center p-3 touch-none">
           <canvas id="tagEditorCanvas" class="w-full h-full object-contain drop-shadow-md cursor-crosshair"></canvas>
           <div id="bgRemoveBadge" class="hidden absolute bottom-2 right-2 bg-slate-900/85 text-white text-[11px] px-2.5 py-1 rounded-full">Processant...</div>
         </div>
       </div>
 
       <!-- Modes Esborrar / Restaurar -->
-      <div class="flex items-center justify-between gap-2 bg-slate-50 rounded-2xl px-2.5 py-1.5 border border-slate-200/80">
+      <div class="flex items-center justify-between gap-2 bg-slate-50 rounded-2xl px-2.5 py-1.5 border border-slate-200/80 shrink-0">
         <div class="flex bg-slate-200/80 p-0.5 rounded-xl">
           <button type="button" id="toolEraseBtn" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-white text-slate-900 shadow-sm transition">Toca per esborrar</button>
           <button type="button" id="toolRestoreBtn" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold text-slate-600 transition">Restaurar</button>
@@ -272,7 +273,7 @@
         <button type="button" id="resetCutoutBtn" class="text-[11px] font-semibold text-sky-600 px-2 py-1 active:opacity-70">Reiniciar</button>
       </div>
 
-      <div class="flex flex-col gap-1">
+      <div class="flex flex-col gap-1 shrink-0">
         <label class="text-xs font-bold text-slate-700">Quina peça de roba és?</label>
         <div class="grid grid-cols-3 gap-2">
           <button type="button" data-cat="top" class="tag-cat-btn py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700">Samarreta</button>
@@ -281,7 +282,7 @@
         </div>
       </div>
 
-      <div class="flex flex-col gap-1">
+      <div class="flex flex-col gap-1 shrink-0">
         <label class="text-xs font-bold text-slate-700">Com és de formal?</label>
         <div class="grid grid-cols-3 gap-2">
           <button type="button" data-form="casual" class="tag-form-btn py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700">Informal</button>
@@ -290,15 +291,22 @@
         </div>
       </div>
 
-      <button type="button" id="saveTagBtn" disabled class="w-full py-3.5 rounded-2xl bg-slate-900 text-white text-sm font-semibold disabled:opacity-35">Desar i següent</button>
+      <button type="button" id="saveTagBtn" disabled class="w-full py-3.5 rounded-2xl bg-slate-900 text-white text-sm font-semibold disabled:opacity-35 shrink-0">Desar i següent</button>
     </div>
   </div>
 
-  <!-- Rentadora -->
+  <!-- Rentadora amb icona discreta de calendari per configurar els dies de bugada -->
   <div id="laundryModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-3">
     <div class="bg-white w-full max-w-md rounded-3xl p-5 shadow-2xl flex flex-col gap-4 max-h-[85dvh]">
       <div class="flex items-center justify-between gap-2">
-        <h2 id="laundryTitle" class="text-base font-bold text-slate-900 truncate">Rentadora</h2>
+        <div class="flex items-center gap-2 min-w-0">
+          <h2 id="laundryTitle" class="text-base font-bold text-slate-900 truncate">Rentadora</h2>
+          <button type="button" id="editLaundryDaysBtn" aria-label="Dies de bugada" title="Dies de bugada" class="w-7 h-7 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center shrink-0 active:scale-95 transition">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+          </button>
+        </div>
         <div class="flex items-center gap-1.5 shrink-0">
           <button type="button" id="selectAllLaundryBtn" class="hidden h-8 px-3 rounded-full bg-white text-slate-900 border border-slate-200 shadow-sm text-xs font-semibold active:scale-95 transition">Tot</button>
           <button type="button" id="cancelLaundrySelectBtn" class="hidden h-8 px-3 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold active:scale-95 transition">Desmarcar</button>
@@ -331,7 +339,6 @@
         </div>
       </div>
 
-      <!-- Filtres per categoria -->
       <div class="flex bg-slate-100 p-1 rounded-full gap-1">
         <button type="button" data-filter="all" class="closet-filter-btn flex-1 py-1.5 text-[11px] font-semibold rounded-full transition-all">Tot</button>
         <button type="button" data-filter="top" class="closet-filter-btn flex-1 py-1.5 text-[11px] font-semibold rounded-full transition-all">Samarretes</button>
@@ -437,14 +444,15 @@
       navigator.storage.persist().catch(function () {});
     }
 
+    // Proporcions harmonitzades perquè samarreta, pantalons i sabates quedin proporcionats
     function makeStarterSVG(category, color) {
       var svg = '';
       if (category === 'top') {
-        svg = '<svg xmlns="http://www.w3.org/2000/svg" width="330" height="350" viewBox="115 90 330 350"><path d="M160 110 L215 90 L280 115 L345 90 L400 110 L445 195 L390 220 L365 175 L365 440 L195 440 L195 175 L170 220 L115 195 Z" fill="' + color + '"/></svg>';
+        svg = '<svg xmlns="http://www.w3.org/2000/svg" width="330" height="330" viewBox="115 90 330 330"><path d="M160 110 L215 90 L280 115 L345 90 L400 110 L445 190 L390 215 L365 170 L365 420 L195 420 L195 170 L170 215 L115 190 Z" fill="' + color + '"/></svg>';
       } else if (category === 'pants') {
-        svg = '<svg xmlns="http://www.w3.org/2000/svg" width="220" height="375" viewBox="170 90 220 375"><path d="M195 90 L365 90 L390 465 L305 465 L280 245 L255 465 L170 465 Z" fill="' + color + '"/></svg>';
+        svg = '<svg xmlns="http://www.w3.org/2000/svg" width="210" height="430" viewBox="175 90 210 430"><path d="M195 90 L365 90 L385 520 L302 520 L280 265 L258 520 L175 520 Z" fill="' + color + '"/></svg>';
       } else {
-        svg = '<svg xmlns="http://www.w3.org/2000/svg" width="330" height="165" viewBox="115 235 330 165"><path d="M115 350 C115 295 170 275 225 275 L265 235 L315 280 C365 295 445 305 445 365 L445 400 L115 400 Z" fill="' + color + '"/></svg>';
+        svg = '<svg xmlns="http://www.w3.org/2000/svg" width="320" height="150" viewBox="120 245 320 150"><path d="M120 350 C120 300 175 280 225 280 L265 245 L315 285 C365 300 440 310 440 365 L440 395 L120 395 Z" fill="' + color + '"/></svg>';
       }
       return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
     }
@@ -486,10 +494,36 @@
       });
     }
 
+    function syncDaySetupButtonsUI() {
+      document.querySelectorAll('.day-setup-btn').forEach(function (btn) {
+        var dayNum = Number(btn.dataset.day);
+        var active = selectedSetupDays.indexOf(dayNum) !== -1;
+        btn.classList.toggle('bg-sky-600', active);
+        btn.classList.toggle('text-white', active);
+        btn.classList.toggle('border-sky-600', active);
+        btn.classList.toggle('shadow-sm', active);
+        btn.classList.toggle('bg-white', !active);
+        btn.classList.toggle('text-slate-700', !active);
+        btn.classList.toggle('border-slate-200', !active);
+      });
+      document.getElementById('saveLaundryDaysBtn').disabled = selectedSetupDays.length === 0;
+    }
+
+    function openLaundryDaysEditor(isInitialSetup) {
+      var rawDays = localStorage.getItem(STORAGE_LAUNDRY_DAYS);
+      selectedSetupDays = rawDays ? JSON.parse(rawDays).slice() : [];
+      syncDaySetupButtonsUI();
+
+      document.getElementById('laundrySetupTitle').textContent = isInitialSetup ? 'Benvinguda!' : 'Dies de bugada';
+      document.getElementById('cancelLaundryDaysBtn').classList.toggle('hidden', Boolean(isInitialSetup));
+      document.getElementById('saveLaundryDaysBtn').textContent = isInitialSetup ? 'Continuar' : 'Desar';
+      document.getElementById('laundrySetupOverlay').classList.remove('hidden');
+    }
+
     function checkLaundrySchedule() {
       var rawDays = localStorage.getItem(STORAGE_LAUNDRY_DAYS);
       if (!rawDays) {
-        document.getElementById('laundrySetupOverlay').classList.remove('hidden');
+        openLaundryDaysEditor(true);
         return;
       }
 
@@ -531,25 +565,27 @@
         var idx = selectedSetupDays.indexOf(dayNum);
         if (idx !== -1) selectedSetupDays.splice(idx, 1);
         else selectedSetupDays.push(dayNum);
-
-        var active = selectedSetupDays.indexOf(dayNum) !== -1;
-        btn.classList.toggle('bg-sky-600', active);
-        btn.classList.toggle('text-white', active);
-        btn.classList.toggle('border-sky-600', active);
-        btn.classList.toggle('shadow-sm', active);
-        btn.classList.toggle('bg-white', !active);
-        btn.classList.toggle('text-slate-700', !active);
-        btn.classList.toggle('border-slate-200', !active);
-
-        document.getElementById('saveLaundryDaysBtn').disabled = selectedSetupDays.length === 0;
+        syncDaySetupButtonsUI();
       });
+    });
+
+    document.getElementById('editLaundryDaysBtn').addEventListener('click', function () {
+      openLaundryDaysEditor(false);
+    });
+
+    document.getElementById('cancelLaundryDaysBtn').addEventListener('click', function () {
+      document.getElementById('laundrySetupOverlay').classList.add('hidden');
     });
 
     document.getElementById('saveLaundryDaysBtn').addEventListener('click', function () {
       if (!selectedSetupDays.length) return;
+      var wasEditingFromLaundry = !document.getElementById('cancelLaundryDaysBtn').classList.contains('hidden');
       localStorage.setItem(STORAGE_LAUNDRY_DAYS, JSON.stringify(selectedSetupDays));
       localStorage.setItem(STORAGE_LAST_CHECK, getTodayDateString());
       document.getElementById('laundrySetupOverlay').classList.add('hidden');
+      if (wasEditingFromLaundry) {
+        showToast('Dies de bugada desats');
+      }
     });
 
     document.getElementById('confirmLaundryDoneBtn').addEventListener('click', function () {
@@ -1387,6 +1423,7 @@
       var allSelected = dirty.length > 0 && laundrySelectedIds.length === dirty.length;
       var grid = document.getElementById('laundryGrid');
       var titleEl = document.getElementById('laundryTitle');
+      var editDaysBtn = document.getElementById('editLaundryDaysBtn');
       var selectAllBtn = document.getElementById('selectAllLaundryBtn');
       var cancelBtn = document.getElementById('cancelLaundrySelectBtn');
       var closeBtn = document.getElementById('closeLaundryBtn');
@@ -1395,6 +1432,7 @@
 
       if (hasSelection) {
         titleEl.textContent = laundrySelectedIds.length + ' seleccionades';
+        editDaysBtn.classList.add('hidden');
         selectAllBtn.classList.toggle('hidden', allSelected);
         cancelBtn.classList.remove('hidden');
         closeBtn.classList.add('hidden');
@@ -1402,6 +1440,7 @@
         multiFooter.classList.remove('hidden');
       } else {
         titleEl.textContent = 'Rentadora';
+        editDaysBtn.classList.remove('hidden');
         selectAllBtn.classList.add('hidden');
         cancelBtn.classList.add('hidden');
         closeBtn.classList.remove('hidden');
