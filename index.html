@@ -1560,7 +1560,7 @@
           ? '<span class="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-sky-600 text-white flex items-center justify-center text-[11px] font-bold">&#10003;</span>'
           : '';
         return '<button type="button" data-id="' + i.id + '" class="laundry-item-btn aspect-square rounded-2xl ' + ringClass + ' p-2 flex items-center justify-center relative active:scale-95 transition"><img src="' + i.image + '" class="w-full h-full object-contain pointer-events-none"/>' + checkBadge + '</button>';
-      }).join('') : '<div class="col-span-3 text-center text-xs text-slate-400 py-10">La rentadora és buida</div>';
+      }).join('') : '<div class="col-span-3 text-center text-xs text-slate-400 py-10">La rentadora està buida</div>';
 
       grid.querySelectorAll('.laundry-item-btn').forEach(function (b) {
         b.addEventListener('click', function () {
