@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ca">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="apple-mobile-web-app-title" content="Closet" />
+  <meta name="apple-mobile-web-app-title" content="Armari" />
   <meta name="theme-color" content="#F5F5F7" />
-  <title>Closet</title>
+  <title>Armari</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     * { -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; box-sizing: border-box; }
@@ -22,35 +22,101 @@
 </head>
 <body class="flex flex-col justify-between h-[100dvh] w-screen overflow-hidden">
 
+  <!-- Primera obertura: Dies de bugada -->
+  <div id="laundrySetupOverlay" class="hidden fixed inset-0 bg-[#F5F5F7] z-[60] flex flex-col items-center justify-center px-6 text-center">
+    <div class="w-full max-w-xs flex flex-col gap-5">
+      <div class="flex flex-col gap-1.5">
+        <h1 class="text-2xl font-bold tracking-tight text-slate-900">Benvinguda!</h1>
+        <p class="text-sm text-slate-500">Quin dia o dies acostuma a estar llesta la bugada?</p>
+      </div>
+      <div class="grid grid-cols-2 gap-2.5 text-left">
+        <button type="button" data-day="1" class="day-setup-btn py-3 px-4 rounded-2xl bg-white border border-slate-200 text-sm font-semibold text-slate-700 transition">Dilluns</button>
+        <button type="button" data-day="2" class="day-setup-btn py-3 px-4 rounded-2xl bg-white border border-slate-200 text-sm font-semibold text-slate-700 transition">Dimarts</button>
+        <button type="button" data-day="3" class="day-setup-btn py-3 px-4 rounded-2xl bg-white border border-slate-200 text-sm font-semibold text-slate-700 transition">Dimecres</button>
+        <button type="button" data-day="4" class="day-setup-btn py-3 px-4 rounded-2xl bg-white border border-slate-200 text-sm font-semibold text-slate-700 transition">Dijous</button>
+        <button type="button" data-day="5" class="day-setup-btn py-3 px-4 rounded-2xl bg-white border border-slate-200 text-sm font-semibold text-slate-700 transition">Divendres</button>
+        <button type="button" data-day="6" class="day-setup-btn py-3 px-4 rounded-2xl bg-white border border-slate-200 text-sm font-semibold text-slate-700 transition">Dissabte</button>
+        <button type="button" data-day="0" class="day-setup-btn col-span-2 py-3 px-4 rounded-2xl bg-white border border-slate-200 text-sm font-semibold text-slate-700 text-center transition">Diumenge</button>
+      </div>
+      <button type="button" id="saveLaundryDaysBtn" disabled class="w-full py-3.5 rounded-2xl bg-slate-900 text-white text-sm font-semibold disabled:opacity-35 transition">
+        Continuar
+      </button>
+    </div>
+  </div>
+
+  <!-- Pregunta inicial del dia -->
+  <div id="welcomeOverlay" class="fixed inset-0 bg-[#F5F5F7] z-50 flex flex-col items-center justify-center px-6 text-center transition-opacity duration-300">
+    <div class="w-full max-w-xs flex flex-col gap-6">
+      <div class="flex flex-col gap-1.5">
+        <h1 class="text-2xl font-bold tracking-tight text-slate-900">Bon dia!</h1>
+        <p class="text-sm text-slate-500">Quin tipus de dia tens avui?</p>
+      </div>
+      <div class="flex flex-col gap-3">
+        <button type="button" data-pick="casual" class="welcome-pick-btn w-full py-4 rounded-2xl bg-white text-slate-900 font-semibold text-base shadow-sm border border-black/5 active:scale-95 transition">
+          Informal
+        </button>
+        <button type="button" data-pick="semiformal" class="welcome-pick-btn w-full py-4 rounded-2xl bg-white text-slate-900 font-semibold text-base shadow-sm border border-black/5 active:scale-95 transition">
+          Semiformal
+        </button>
+        <button type="button" data-pick="formal" class="welcome-pick-btn w-full py-4 rounded-2xl bg-white text-slate-900 font-semibold text-base shadow-sm border border-black/5 active:scale-95 transition">
+          Formal
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recordatori de bugada -->
+  <div id="laundryReminderModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[55] flex items-center justify-center p-5">
+    <div class="bg-white w-full max-w-xs rounded-3xl p-6 shadow-2xl flex flex-col gap-4 text-center">
+      <div class="w-12 h-12 rounded-full bg-sky-100 text-sky-600 mx-auto flex items-center justify-center">
+        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="2" width="18" height="20" rx="3"/><line x1="3" y1="7" x2="21" y2="7"/><circle cx="12" cy="14" r="4.5"/>
+        </svg>
+      </div>
+      <div class="flex flex-col gap-1">
+        <h2 class="text-lg font-bold text-slate-900">Ja està feta la bugada?</h2>
+        <p class="text-xs text-slate-500">Ha passat el dia de bugada i tens roba pendent de rentar.</p>
+      </div>
+      <div class="flex flex-col gap-2 pt-1">
+        <button type="button" id="confirmLaundryDoneBtn" class="w-full py-3 rounded-2xl bg-sky-600 text-white text-sm font-semibold active:scale-98 transition">
+          Sí, refrescar la roba
+        </button>
+        <button type="button" id="dismissLaundryReminderBtn" class="w-full py-2.5 rounded-2xl bg-slate-100 text-slate-600 text-xs font-semibold active:scale-98 transition">
+          Encara no
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Barra superior -->
   <header class="safe-top px-4 pb-2 flex items-center justify-between gap-2 z-10">
     <div id="formalityBar" class="flex bg-black/5 p-1 rounded-full flex-1 max-w-[270px]">
-      <button type="button" data-formality="casual" class="formality-btn flex-1 py-1.5 text-xs font-semibold rounded-full transition-all">Casual</button>
+      <button type="button" data-formality="casual" class="formality-btn flex-1 py-1.5 text-xs font-semibold rounded-full transition-all">Informal</button>
       <button type="button" data-formality="semiformal" class="formality-btn flex-1 py-1.5 text-xs font-semibold rounded-full transition-all">Semiformal</button>
       <button type="button" data-formality="formal" class="formality-btn flex-1 py-1.5 text-xs font-semibold rounded-full transition-all">Formal</button>
     </div>
 
     <div class="flex items-center gap-2">
-      <button type="button" id="laundryBtn" aria-label="Laundry" class="relative w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center active:scale-95 transition">
+      <!-- Rentadora -->
+      <button type="button" id="laundryBtn" aria-label="Rentadora" class="relative w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center active:scale-95 transition">
         <svg class="w-5 h-5 text-slate-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="2" width="18" height="20" rx="3"/><line x1="3" y1="7" x2="21" y2="7"/><circle cx="7" cy="4.5" r="0.8" fill="currentColor"/><circle cx="10" cy="4.5" r="0.8" fill="currentColor"/><circle cx="12" cy="14" r="4.5"/><path d="M9.5 14c1.2-1 2.3-1 3.5 0s2.3 1 3.5 0"/>
         </svg>
         <span id="laundryBadge" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center">0</span>
       </button>
 
-      <button type="button" id="closetBtn" aria-label="Closet" class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center active:scale-95 transition">
+      <!-- Armari -->
+      <button type="button" id="closetBtn" aria-label="Armari" class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center active:scale-95 transition">
         <svg class="w-5 h-5 text-slate-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.47a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.47a2 2 0 00-1.34-2.23z"/>
         </svg>
-      </button>
-
-      <button type="button" id="addBtn" class="h-10 px-3.5 rounded-full bg-slate-900 text-white text-xs font-semibold shadow-sm flex items-center gap-1 active:scale-95 transition">
-        <span class="text-base leading-none">+</span> Add
       </button>
     </div>
   </header>
 
   <input type="file" id="fileInput" accept="image/*" multiple class="hidden" />
 
+  <!-- Peces de roba -->
   <main class="flex-1 grid grid-rows-3 place-items-center px-6 py-1 relative">
     <div id="slot-top" data-category="top" class="cutout-box"><div class="slot-content w-full h-full flex items-center justify-center"></div></div>
     <div id="slot-pants" data-category="pants" class="cutout-box"><div class="slot-content w-full h-full flex items-center justify-center"></div></div>
@@ -58,21 +124,22 @@
     <div id="toastMsg" class="pointer-events-none opacity-0 transition-opacity duration-300 fixed top-20 left-1/2 -translate-x-1/2 bg-slate-900/85 text-white text-xs font-medium px-3.5 py-1.5 rounded-full shadow-lg z-40"></div>
   </main>
 
+  <!-- Barra inferior -->
   <footer class="safe-bottom px-6 pt-2 flex flex-col items-center gap-1.5 z-10">
     <button type="button" id="shuffleBtn" class="w-full max-w-xs py-3 rounded-full bg-white text-slate-900 font-semibold text-sm shadow-sm border border-black/5 active:scale-95 transition flex items-center justify-center gap-2">
-      Shuffle Outfit
+      Canviar conjunt
     </button>
-    <p class="text-[11px] text-slate-400">Swipe right to swap &bull; Swipe left to wash</p>
+    <p class="text-[11px] text-slate-400">Llisca a la dreta per canviar &bull; A l'esquerra per rentar</p>
   </footer>
 
-  <!-- Tagging Modal -->
-  <div id="taggingModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-3">
+  <!-- Etiquetatge de fotos noves -->
+  <div id="taggingModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[65] flex items-end sm:items-center justify-center p-3">
     <div class="bg-white w-full max-w-md rounded-3xl p-5 shadow-2xl flex flex-col gap-4 max-h-[92dvh] overflow-y-auto">
       <div class="flex items-center justify-between">
-        <span id="tagProgressText" class="text-xs font-bold uppercase tracking-wider text-slate-400">Photo 1 of 1</span>
+        <span id="tagProgressText" class="text-xs font-bold uppercase tracking-wider text-slate-400">Foto 1 de 1</span>
         <div class="flex items-center gap-3">
-          <button type="button" id="skipPhotoBtn" class="text-xs font-semibold text-slate-500">Skip</button>
-          <button type="button" id="cancelQueueBtn" class="text-xs font-semibold text-rose-500">Cancel All</button>
+          <button type="button" id="skipPhotoBtn" class="text-xs font-semibold text-slate-500">Ometre</button>
+          <button type="button" id="cancelQueueBtn" class="text-xs font-semibold text-rose-500">Cancel·lar tot</button>
         </div>
       </div>
 
@@ -82,62 +149,73 @@
 
       <div class="relative w-full h-52 rounded-2xl checkerboard flex items-center justify-center overflow-hidden border border-slate-200">
         <img id="tagPreviewImg" src="" alt="" class="w-44 h-44 object-contain drop-shadow-md" />
-        <div id="bgRemoveBadge" class="hidden absolute bottom-2 right-2 bg-slate-900/80 text-white text-[11px] px-2.5 py-1 rounded-full">Removing background...</div>
+        <div id="bgRemoveBadge" class="hidden absolute bottom-2 right-2 bg-slate-900/80 text-white text-[11px] px-2.5 py-1 rounded-full">Eliminant fons...</div>
       </div>
 
       <div class="flex flex-col gap-2">
-        <label class="text-xs font-bold text-slate-700">What item of clothing is it?</label>
+        <label class="text-xs font-bold text-slate-700">Quina peça de roba és?</label>
         <div class="grid grid-cols-3 gap-2">
-          <button type="button" data-cat="top" class="tag-cat-btn py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700">Top</button>
-          <button type="button" data-cat="pants" class="tag-cat-btn py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700">Pants</button>
-          <button type="button" data-cat="shoes" class="tag-cat-btn py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700">Shoes</button>
+          <button type="button" data-cat="top" class="tag-cat-btn py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700">Samarreta</button>
+          <button type="button" data-cat="pants" class="tag-cat-btn py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700">Pantalons</button>
+          <button type="button" data-cat="shoes" class="tag-cat-btn py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700">Sabates</button>
         </div>
       </div>
 
       <div class="flex flex-col gap-2">
-        <label class="text-xs font-bold text-slate-700">How formal?</label>
+        <label class="text-xs font-bold text-slate-700">Com és de formal?</label>
         <div class="grid grid-cols-3 gap-2">
-          <button type="button" data-form="casual" class="tag-form-btn py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700">Casual</button>
+          <button type="button" data-form="casual" class="tag-form-btn py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700">Informal</button>
           <button type="button" data-form="semiformal" class="tag-form-btn py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700">Semiformal</button>
           <button type="button" data-form="formal" class="tag-form-btn py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700">Formal</button>
         </div>
       </div>
 
-      <button type="button" id="saveTagBtn" disabled class="w-full py-3.5 rounded-2xl bg-slate-900 text-white text-sm font-semibold disabled:opacity-35">Save &amp; Next</button>
+      <button type="button" id="saveTagBtn" disabled class="w-full py-3.5 rounded-2xl bg-slate-900 text-white text-sm font-semibold disabled:opacity-35">Desar i següent</button>
     </div>
   </div>
 
-  <!-- Washing Machine Modal -->
+  <!-- Rentadora -->
   <div id="laundryModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-3">
     <div class="bg-white w-full max-w-md rounded-3xl p-5 shadow-2xl flex flex-col gap-4 max-h-[85dvh]">
       <div class="flex items-center justify-between">
-        <h2 class="text-base font-bold text-slate-900">Washing Machine</h2>
+        <h2 class="text-base font-bold text-slate-900">Rentadora</h2>
         <button type="button" id="closeLaundryBtn" class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 font-bold">&times;</button>
       </div>
       <div id="laundryGrid" class="flex-1 overflow-y-auto grid grid-cols-3 gap-3 min-h-[120px] p-1"></div>
-      <button type="button" id="washAllBtn" class="w-full py-3.5 rounded-2xl bg-sky-600 text-white text-sm font-semibold disabled:opacity-40">Wash All (Do Laundry)</button>
+      <button type="button" id="washAllBtn" class="w-full py-3.5 rounded-2xl bg-sky-600 text-white text-sm font-semibold disabled:opacity-40">Rentar-ho tot (Posar rentadora)</button>
     </div>
   </div>
 
-  <!-- Closet Modal -->
+  <!-- Armari -->
   <div id="closetModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-3">
     <div class="bg-white w-full max-w-md rounded-3xl p-5 shadow-2xl flex flex-col gap-4 max-h-[85dvh]">
       <div class="flex items-center justify-between">
-        <h2 class="text-base font-bold text-slate-900">Saved Clothes</h2>
-        <button type="button" id="closeClosetBtn" class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 font-bold">&times;</button>
+        <h2 class="text-base font-bold text-slate-900">Armari</h2>
+        <div class="flex items-center gap-2">
+          <button type="button" id="addInsideClosetBtn" class="h-8 px-3 rounded-full bg-slate-900 text-white text-xs font-semibold flex items-center gap-1 active:scale-95 transition">
+            <span class="text-sm leading-none">+</span> Afegir roba
+          </button>
+          <button type="button" id="closeClosetBtn" class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 font-bold">&times;</button>
+        </div>
       </div>
       <div id="closetGrid" class="flex-1 overflow-y-auto grid grid-cols-3 gap-3 min-h-[140px] p-1"></div>
     </div>
   </div>
 
   <script>
-    var DB_NAME = 'ClosetWardrobeDB';
+    var DB_NAME = 'ArmariWardrobeDB';
     var STORE_NAME = 'clothes';
     var db = null;
 
+    var STORAGE_LAUNDRY_DAYS = 'armari_laundry_days_v1';
+    var STORAGE_LAST_CHECK = 'armari_laundry_last_check_v1';
+
+    var CAT_LABELS = { top: 'samarreta', pants: 'pantalons', shoes: 'sabates' };
+    var FORM_LABELS = { casual: 'informal', semiformal: 'semiformal', formal: 'formal' };
+
     function openDB() {
       return new Promise(function (resolve, reject) {
-        if (!window.indexedDB) return reject(new Error('No IndexedDB'));
+        if (!window.indexedDB) return reject(new Error('Sense IndexedDB'));
         var req = indexedDB.open(DB_NAME, 1);
         req.onupgradeneeded = function (e) {
           var d = e.target.result;
@@ -209,6 +287,96 @@
     var currentIndices = { top: 0, pants: 0, shoes: 0 };
     var taggingQueue = [];
     var queueIndex = 0;
+    var selectedSetupDays = [];
+
+    function getTodayDateString() {
+      var now = new Date();
+      return now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+    }
+
+    function washAllDirtyItems() {
+      var dirty = wardrobe.filter(function (i) { return !i.isStarter && i.dirty; });
+      return Promise.all(dirty.map(function (i) { i.dirty = false; return putItem(i); })).then(function () {
+        renderAll();
+      });
+    }
+
+    function checkLaundrySchedule() {
+      var rawDays = localStorage.getItem(STORAGE_LAUNDRY_DAYS);
+      if (!rawDays) {
+        document.getElementById('laundrySetupOverlay').classList.remove('hidden');
+        return;
+      }
+
+      var laundryDays = JSON.parse(rawDays);
+      var todayStr = getTodayDateString();
+      var lastCheckStr = localStorage.getItem(STORAGE_LAST_CHECK);
+
+      if (!lastCheckStr) {
+        localStorage.setItem(STORAGE_LAST_CHECK, todayStr);
+        return;
+      }
+
+      if (lastCheckStr === todayStr) return;
+
+      var start = new Date(lastCheckStr + 'T00:00:00');
+      var end = new Date(todayStr + 'T00:00:00');
+      var laundryDayPassed = false;
+      var cursor = new Date(start.getTime() + 86400000);
+
+      while (cursor <= end) {
+        if (laundryDays.indexOf(cursor.getDay()) !== -1) {
+          laundryDayPassed = true;
+          break;
+        }
+        cursor = new Date(cursor.getTime() + 86400000);
+      }
+
+      var hasDirtyClothes = wardrobe.some(function (i) { return !i.isStarter && i.dirty; });
+      if (laundryDayPassed && hasDirtyClothes) {
+        document.getElementById('laundryReminderModal').classList.remove('hidden');
+      } else {
+        localStorage.setItem(STORAGE_LAST_CHECK, todayStr);
+      }
+    }
+
+    document.querySelectorAll('.day-setup-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var dayNum = Number(btn.dataset.day);
+        var idx = selectedSetupDays.indexOf(dayNum);
+        if (idx !== -1) selectedSetupDays.splice(idx, 1);
+        else selectedSetupDays.push(dayNum);
+
+        var active = selectedSetupDays.indexOf(dayNum) !== -1;
+        btn.classList.toggle('bg-slate-900', active);
+        btn.classList.toggle('text-white', active);
+        btn.classList.toggle('border-slate-900', active);
+        btn.classList.toggle('bg-white', !active);
+        btn.classList.toggle('text-slate-700', !active);
+
+        document.getElementById('saveLaundryDaysBtn').disabled = selectedSetupDays.length === 0;
+      });
+    });
+
+    document.getElementById('saveLaundryDaysBtn').addEventListener('click', function () {
+      if (!selectedSetupDays.length) return;
+      localStorage.setItem(STORAGE_LAUNDRY_DAYS, JSON.stringify(selectedSetupDays));
+      localStorage.setItem(STORAGE_LAST_CHECK, getTodayDateString());
+      document.getElementById('laundrySetupOverlay').classList.add('hidden');
+    });
+
+    document.getElementById('confirmLaundryDoneBtn').addEventListener('click', function () {
+      localStorage.setItem(STORAGE_LAST_CHECK, getTodayDateString());
+      document.getElementById('laundryReminderModal').classList.add('hidden');
+      washAllDirtyItems().then(function () {
+        showToast('Roba refrescada!');
+      });
+    });
+
+    document.getElementById('dismissLaundryReminderBtn').addEventListener('click', function () {
+      localStorage.setItem(STORAGE_LAST_CHECK, getTodayDateString());
+      document.getElementById('laundryReminderModal').classList.add('hidden');
+    });
 
     function normalizeCutoutToSquare(sourceCanvas) {
       var w = sourceCanvas.width, h = sourceCanvas.height;
@@ -318,7 +486,7 @@
         var box = document.getElementById('slot-' + cat).querySelector('.slot-content');
         var list = getCleanItemsFor(cat);
         if (list.length === 0) {
-          box.innerHTML = '<div class="w-28 h-28 rounded-full border-2 border-dashed border-slate-300 flex items-center justify-center text-slate-400 text-xs font-medium">+ ' + cat + '</div>';
+          box.innerHTML = '<div class="w-28 h-28 rounded-full border-2 border-dashed border-slate-300 flex items-center justify-center text-slate-400 text-xs font-medium">+ ' + CAT_LABELS[cat] + '</div>';
           return;
         }
         if (currentIndices[cat] >= list.length) currentIndices[cat] = 0;
@@ -333,7 +501,7 @@
 
     function nextItem(cat) {
       var list = getCleanItemsFor(cat);
-      if (list.length <= 1) { showToast('No other ' + cat + ' in ' + currentFormality); return; }
+      if (list.length <= 1) { showToast('No hi ha més ' + CAT_LABELS[cat] + ' (' + FORM_LABELS[currentFormality] + ')'); return; }
       currentIndices[cat] = (currentIndices[cat] + 1) % list.length;
       renderAll();
     }
@@ -342,9 +510,9 @@
       var list = getCleanItemsFor(cat);
       if (!list.length) return;
       var item = list[currentIndices[cat]];
-      if (item.isStarter) { showToast('Add real photos to use laundry'); return; }
+      if (item.isStarter) { showToast('Afegeix fotos reals per fer servir la rentadora'); return; }
       item.dirty = true;
-      putItem(item).then(function () { showToast('Sent to washing machine'); renderAll(); });
+      putItem(item).then(function () { showToast('Enviat a la rentadora'); renderAll(); });
     }
 
     function attachSwipe(cat) {
@@ -372,7 +540,7 @@
     function updateTaggingUI() {
       var cur = taggingQueue[queueIndex];
       if (!cur) return;
-      document.getElementById('tagProgressText').textContent = 'Photo ' + (queueIndex + 1) + ' of ' + taggingQueue.length;
+      document.getElementById('tagProgressText').textContent = 'Foto ' + (queueIndex + 1) + ' de ' + taggingQueue.length;
       document.getElementById('tagProgressBar').style.width = (((queueIndex + 1) / taggingQueue.length) * 100) + '%';
       document.getElementById('tagPreviewImg').src = cur.processed || cur.preview;
       document.getElementById('bgRemoveBadge').classList.toggle('hidden', !cur.processing);
@@ -388,13 +556,39 @@
 
       var saveBtn = document.getElementById('saveTagBtn');
       saveBtn.disabled = !cur.category || cur.formalities.length === 0 || cur.processing;
-      saveBtn.textContent = queueIndex === taggingQueue.length - 1 ? 'Save & Finish' : 'Save & Next';
+      saveBtn.textContent = queueIndex === taggingQueue.length - 1 ? 'Desar i acabar' : 'Desar i següent';
     }
 
     function nextInQueue() {
       if (queueIndex + 1 < taggingQueue.length) { queueIndex++; updateTaggingUI(); }
-      else { taggingQueue = []; queueIndex = 0; document.getElementById('taggingModal').classList.add('hidden'); renderAll(); }
+      else {
+        taggingQueue = []; queueIndex = 0;
+        document.getElementById('taggingModal').classList.add('hidden');
+        renderAll();
+        if (!document.getElementById('closetModal').classList.contains('hidden')) {
+          renderClosetModal();
+        }
+      }
     }
+
+    function randomizeIndices() {
+      ['top', 'pants', 'shoes'].forEach(function (cat) {
+        var list = getCleanItemsFor(cat);
+        if (list.length > 0) currentIndices[cat] = Math.floor(Math.random() * list.length);
+      });
+    }
+
+    document.querySelectorAll('.welcome-pick-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        currentFormality = btn.dataset.pick;
+        currentIndices = { top: 0, pants: 0, shoes: 0 };
+        randomizeIndices();
+        renderAll();
+        var overlay = document.getElementById('welcomeOverlay');
+        overlay.style.opacity = '0';
+        setTimeout(function () { overlay.classList.add('hidden'); }, 300);
+      });
+    });
 
     document.querySelectorAll('.formality-btn').forEach(function (b) {
       b.addEventListener('click', function () { currentFormality = b.dataset.formality; currentIndices = { top: 0, pants: 0, shoes: 0 }; renderAll(); });
@@ -410,7 +604,11 @@
     });
 
     var fileInput = document.getElementById('fileInput');
-    document.getElementById('addBtn').addEventListener('click', function () { fileInput.value = ''; fileInput.click(); });
+    document.getElementById('addInsideClosetBtn').addEventListener('click', function () {
+      fileInput.value = '';
+      fileInput.click();
+    });
+
     fileInput.addEventListener('change', function (e) {
       var files = Array.prototype.slice.call(e.target.files || []);
       if (!files.length) return;
@@ -448,40 +646,57 @@
       putItem(item).then(function () { wardrobe.push(item); nextInQueue(); });
     });
     document.getElementById('skipPhotoBtn').addEventListener('click', nextInQueue);
-    document.getElementById('cancelQueueBtn').addEventListener('click', function () { taggingQueue = []; document.getElementById('taggingModal').classList.add('hidden'); renderAll(); });
+    document.getElementById('cancelQueueBtn').addEventListener('click', function () {
+      taggingQueue = [];
+      document.getElementById('taggingModal').classList.add('hidden');
+      renderAll();
+    });
 
     document.getElementById('laundryBtn').addEventListener('click', function () {
       var dirty = wardrobe.filter(function (i) { return !i.isStarter && i.dirty; });
       var grid = document.getElementById('laundryGrid');
       document.getElementById('washAllBtn').disabled = dirty.length === 0;
-      grid.innerHTML = dirty.length ? dirty.map(function (i) { return '<div class="aspect-square rounded-2xl bg-slate-100 p-2 flex items-center justify-center"><img src="' + i.image + '" class="w-full h-full object-contain"/></div>'; }).join('') : '<div class="col-span-3 text-center text-xs text-slate-400 py-10">Washing machine is empty</div>';
+      grid.innerHTML = dirty.length ? dirty.map(function (i) { return '<div class="aspect-square rounded-2xl bg-slate-100 p-2 flex items-center justify-center"><img src="' + i.image + '" class="w-full h-full object-contain"/></div>'; }).join('') : '<div class="col-span-3 text-center text-xs text-slate-400 py-10">La rentadora és buida</div>';
       document.getElementById('laundryModal').classList.remove('hidden');
     });
     document.getElementById('closeLaundryBtn').addEventListener('click', function () { document.getElementById('laundryModal').classList.add('hidden'); });
     document.getElementById('washAllBtn').addEventListener('click', function () {
-      var dirty = wardrobe.filter(function (i) { return !i.isStarter && i.dirty; });
-      Promise.all(dirty.map(function (i) { i.dirty = false; return putItem(i); })).then(function () {
-        document.getElementById('laundryModal').classList.add('hidden'); renderAll(); showToast('All clothes washed!');
+      washAllDirtyItems().then(function () {
+        document.getElementById('laundryModal').classList.add('hidden');
+        showToast('Tota la roba rentada!');
       });
     });
 
-    document.getElementById('closetBtn').addEventListener('click', function () {
+    function renderClosetModal() {
       var real = wardrobe.filter(function (i) { return !i.isStarter; });
       var grid = document.getElementById('closetGrid');
       grid.innerHTML = real.length ? real.map(function (i) {
         return '<div class="aspect-square rounded-2xl bg-slate-100 p-2 flex items-center justify-center relative"><img src="' + i.image + '" class="w-full h-full object-contain"/><button type="button" data-id="' + i.id + '" class="del-btn absolute top-1 right-1 w-6 h-6 rounded-full bg-rose-500 text-white text-xs font-bold">&times;</button></div>';
-      }).join('') : '<div class="col-span-3 text-center text-xs text-slate-400 py-10">No clothes added yet</div>';
+      }).join('') : '<div class="col-span-3 text-center text-xs text-slate-400 py-10">Encara no hi ha roba a l\'armari</div>';
       grid.querySelectorAll('.del-btn').forEach(function (b) {
         b.addEventListener('click', function () {
           var id = b.dataset.id;
-          deleteItemFromDB(id).then(function () { wardrobe = wardrobe.filter(function (w) { return w.id !== id; }); document.getElementById('closetBtn').click(); renderAll(); });
+          deleteItemFromDB(id).then(function () { wardrobe = wardrobe.filter(function (w) { return w.id !== id; }); renderClosetModal(); renderAll(); });
         });
       });
+    }
+
+    document.getElementById('closetBtn').addEventListener('click', function () {
+      renderClosetModal();
       document.getElementById('closetModal').classList.remove('hidden');
     });
     document.getElementById('closeClosetBtn').addEventListener('click', function () { document.getElementById('closetModal').classList.add('hidden'); });
 
-    getAllItems().then(function (saved) { wardrobe = STARTER_ITEMS.concat(saved); renderAll(); }).catch(function () { wardrobe = STARTER_ITEMS.slice(); renderAll(); });
+    getAllItems().then(function (saved) {
+      wardrobe = STARTER_ITEMS.concat(saved);
+      renderAll();
+      checkLaundrySchedule();
+    }).catch(function () {
+      wardrobe = STARTER_ITEMS.slice();
+      renderAll();
+      checkLaundrySchedule();
+    });
+
     if ('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js').catch(function () {}); }
   </script>
 </body>
