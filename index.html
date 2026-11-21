@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="ca">
+<html lang="ca" translate="no" class="notranslate">
 <head>
   <meta charset="UTF-8" />
+  <meta name="google" content="notranslate" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -15,60 +16,59 @@
       c.width = 512; c.height = 512;
       var ctx = c.getContext('2d');
 
+      // Fons
       ctx.fillStyle = '#F5F5F7';
       ctx.fillRect(0, 0, 512, 512);
 
+      // 1. Dibuixem el penja-robes SENCER primer (quedarà darrere la samarreta)
       ctx.strokeStyle = '#0F172A';
       ctx.lineWidth = 14;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
 
-      // Penja-robes (només el ganxo sobresurt per dalt)
       ctx.beginPath();
-      ctx.arc(256, 78, 21, Math.PI * 0.9, Math.PI * 2.15);
-      ctx.quadraticCurveTo(277, 108, 256, 118);
-      ctx.lineTo(256, 144);
+      ctx.arc(256, 86, 22, Math.PI * 0.9, Math.PI * 2.15);
+      ctx.quadraticCurveTo(278, 116, 256, 126);
+      ctx.lineTo(256, 146);
+      ctx.moveTo(256, 146);
+      ctx.lineTo(156, 192);
+      ctx.moveTo(256, 146);
+      ctx.lineTo(356, 192);
       ctx.stroke();
 
-      // Part interior del penja-robes ben endins del coll
+      // 2. Dibuixem la samarreta a sobre i l'omplim de blanc perquè tapi el penja-robes
+      ctx.beginPath();
+      ctx.moveTo(202, 162);
+      ctx.quadraticCurveTo(256, 198, 310, 162);
+      ctx.lineTo(372, 180);
+      ctx.lineTo(432, 256);
+      ctx.lineTo(380, 286);
+      ctx.lineTo(348, 242);
+      ctx.lineTo(348, 426);
+      ctx.lineTo(164, 426);
+      ctx.lineTo(164, 242);
+      ctx.lineTo(132, 286);
+      ctx.lineTo(80, 256);
+      ctx.lineTo(140, 180);
+      ctx.closePath();
+
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fill();
+      ctx.stroke();
+
+      // 3. Quadrat, triangle i cercle horitzontals a dins
       ctx.lineWidth = 10;
-      ctx.beginPath();
-      ctx.moveTo(212, 162);
-      ctx.lineTo(256, 142);
-      ctx.lineTo(300, 162);
-      ctx.stroke();
+      ctx.strokeRect(194, 284, 30, 30);
 
-      // Samarreta pujada perquè el penja-robes quedi més endins
-      ctx.lineWidth = 14;
       ctx.beginPath();
-      ctx.moveTo(198, 134);
-      ctx.quadraticCurveTo(256, 178, 314, 134);
-      ctx.lineTo(376, 156);
-      ctx.lineTo(436, 234);
-      ctx.lineTo(382, 266);
-      ctx.lineTo(350, 220);
-      ctx.lineTo(350, 414);
-      ctx.lineTo(162, 414);
-      ctx.lineTo(162, 220);
-      ctx.lineTo(130, 266);
-      ctx.lineTo(76, 234);
-      ctx.lineTo(136, 156);
+      ctx.moveTo(256, 283);
+      ctx.lineTo(273, 314);
+      ctx.lineTo(239, 314);
       ctx.closePath();
       ctx.stroke();
 
-      // Quadrat, triangle i cercle horitzontals
-      ctx.lineWidth = 10;
-      ctx.strokeRect(194, 268, 30, 30);
-
       ctx.beginPath();
-      ctx.moveTo(256, 267);
-      ctx.lineTo(273, 298);
-      ctx.lineTo(239, 298);
-      ctx.closePath();
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.arc(303, 283, 15, 0, Math.PI * 2);
+      ctx.arc(303, 299, 15, 0, Math.PI * 2);
       ctx.stroke();
 
       var iconUrl = c.toDataURL('image/png');
@@ -111,7 +111,7 @@
     .checkerboard { background-image: linear-gradient(45deg,#e5e7eb 25%,transparent 25%),linear-gradient(-45deg,#e5e7eb 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#e5e7eb 75%),linear-gradient(-45deg,transparent 75%,#e5e7eb 75%); background-size: 20px 20px; background-position: 0 0,0 10px,10px -10px,-10px 0; }
   </style>
 </head>
-<body class="flex flex-col justify-between h-[100dvh] w-screen overflow-hidden">
+<body translate="no" class="notranslate flex flex-col justify-between h-[100dvh] w-screen overflow-hidden">
 
   <!-- Primera obertura: Dies de bugada -->
   <div id="laundrySetupOverlay" class="hidden fixed inset-0 bg-[#F5F5F7] z-[60] flex flex-col items-center justify-center px-6 text-center">
@@ -266,7 +266,7 @@
     </div>
   </div>
 
-  <!-- Rentadora (selecció amb un clic) -->
+  <!-- Rentadora (selecció directa per clic) -->
   <div id="laundryModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-3">
     <div class="bg-white w-full max-w-md rounded-3xl p-5 shadow-2xl flex flex-col gap-4 max-h-[85dvh]">
       <div class="flex items-center justify-between">
@@ -287,7 +287,7 @@
     </div>
   </div>
 
-  <!-- Armari (selecció amb un clic) -->
+  <!-- Armari (selecció directa per clic) -->
   <div id="closetModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-3">
     <div class="bg-white w-full max-w-md rounded-3xl p-5 shadow-2xl flex flex-col gap-4 max-h-[85dvh]">
       <div class="flex items-center justify-between">
@@ -837,7 +837,6 @@
       renderCarousel();
     });
 
-    // Lliscar al carrusel
     (function () {
       var stage = document.getElementById('carouselStage');
       var sx = 0, dx = 0, down = false;
@@ -864,7 +863,7 @@
       stage.addEventListener('pointercancel', function () { down = false; });
     })();
 
-    // --- RENTADORA (selecció amb 1 clic) ---
+    // --- RENTADORA (selecció directa amb 1 clic) ---
     function toggleLaundrySelection(id) {
       var idx = laundrySelectedIds.indexOf(id);
       if (idx !== -1) laundrySelectedIds.splice(idx, 1);
@@ -954,7 +953,7 @@
       });
     });
 
-    // --- ARMARI (selecció amb 1 clic + lògica rentadora intel·ligent) ---
+    // --- ARMARI (selecció directa amb 1 clic) ---
     function toggleClosetSelection(id) {
       var idx = closetSelectedIds.indexOf(id);
       if (idx !== -1) closetSelectedIds.splice(idx, 1);
@@ -988,8 +987,6 @@
         cancelBtn.classList.remove('hidden');
         multiFooter.classList.remove('hidden');
 
-        // Si TOTES les seleccionades ja són a la rentadora -> Treure de la rentadora
-        // Si n'hi ha alguna que NO hi és -> A la rentadora (totes)
         var allDirty = selectedItems.every(function (i) { return i.dirty; });
         toggleLaundryBtn.textContent = allDirty ? 'Treure rentadora' : 'A la rentadora';
       } else {
@@ -1076,7 +1073,11 @@
       checkLaundrySchedule();
     });
 
-    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js').catch(function () {}); }
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').then(function (reg) {
+        reg.update().catch(function () {});
+      }).catch(function () {});
+    }
   </script>
 </body>
 </html>
