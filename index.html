@@ -75,6 +75,7 @@
 
       var appleLink = document.createElement('link');
       appleLink.rel = 'apple-touch-icon';
+      appleLink.sizes = '512x512';
       appleLink.href = iconUrl;
       document.head.appendChild(appleLink);
 
@@ -87,16 +88,15 @@
       var manifestObj = {
         name: 'Armari',
         short_name: 'Armari',
-        start_url: location.href,
+        start_url: location.href.split('#')[0],
         display: 'standalone',
         background_color: '#F5F5F7',
         theme_color: '#F5F5F7',
-        icons: [{ src: iconUrl, sizes: '512x512', type: 'image/png' }]
+        icons: [{ src: iconUrl, sizes: '512x512', type: 'image/png', purpose: 'any' }]
       };
-      var blob = new Blob([JSON.stringify(manifestObj)], { type: 'application/manifest+json' });
       var manifestLink = document.createElement('link');
       manifestLink.rel = 'manifest';
-      manifestLink.href = URL.createObjectURL(blob);
+      manifestLink.href = 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifestObj));
       document.head.appendChild(manifestLink);
     })();
   </script>
@@ -927,7 +927,7 @@
         return;
       }
       var list = getCleanItemsFor(cat);
-      if (list.length <= 1) return;
+      if (!list.length) return;
 
       if (Math.random() < 0.01) {
         duckEasterEggActive = true;
@@ -935,6 +935,7 @@
         return;
       }
 
+      if (list.length <= 1) return;
       duckEasterEggActive = false;
       currentIndices[cat] = (currentIndices[cat] + 1) % list.length;
       renderAll();
@@ -1250,19 +1251,20 @@
         return;
       }
 
-      var changedAny = false;
+      if (Math.random() < 0.01) {
+        duckEasterEggActive = true;
+        renderAll();
+        return;
+      }
+
       ['top', 'pants', 'shoes'].forEach(function (cat) {
         if (lockedSlots[cat]) return;
         var list = getCleanItemsFor(cat);
         if (list.length > 1) {
           currentIndices[cat] = (currentIndices[cat] + 1 + Math.floor(Math.random() * (list.length - 1))) % list.length;
-          changedAny = true;
         }
       });
 
-      if (changedAny && Math.random() < 0.01) {
-        duckEasterEggActive = true;
-      }
       renderAll();
     });
 

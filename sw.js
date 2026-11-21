@@ -1,9 +1,15 @@
-const CACHE_NAME = 'armari-v17';
-const ASSETS = ['./', './index.html', './duck-onesie.png'];
+const CACHE_NAME = 'armari-v18';
+const CORE_ASSETS = ['./', './index.html'];
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();
-  e.waitUntil(caches.open(CACHE_NAME).then((c) => c.addAll(ASSETS)));
+  e.waitUntil(
+    caches.open(CACHE_NAME).then((c) =>
+      c.addAll(CORE_ASSETS).then(() =>
+        c.add('./duck-onesie.png').catch(() => {})
+      )
+    )
+  );
 });
 
 self.addEventListener('activate', (e) => {
@@ -18,8 +24,10 @@ self.addEventListener('fetch', (e) => {
   e.respondWith(
     fetch(e.request)
       .then((res) => {
-        const copy = res.clone();
-        caches.open(CACHE_NAME).then((c) => c.put(e.request, copy));
+        if (res && res.status === 200) {
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then((c) => c.put(e.request, copy));
+        }
         return res;
       })
       .catch(() => caches.match(e.request))
