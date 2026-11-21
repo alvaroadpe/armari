@@ -20,36 +20,36 @@
       ctx.fillStyle = '#F5F5F7';
       ctx.fillRect(0, 0, 512, 512);
 
-      // 1. Dibuixem el penja-robes SENCER primer (quedarà darrere la samarreta)
+      // 1. Penja-robes més amunt (darrere la samarreta)
       ctx.strokeStyle = '#0F172A';
       ctx.lineWidth = 14;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
 
       ctx.beginPath();
-      ctx.arc(256, 86, 22, Math.PI * 0.9, Math.PI * 2.15);
-      ctx.quadraticCurveTo(278, 116, 256, 126);
-      ctx.lineTo(256, 146);
-      ctx.moveTo(256, 146);
-      ctx.lineTo(156, 192);
-      ctx.moveTo(256, 146);
-      ctx.lineTo(356, 192);
+      ctx.arc(256, 62, 22, Math.PI * 0.9, Math.PI * 2.15);
+      ctx.quadraticCurveTo(278, 92, 256, 102);
+      ctx.lineTo(256, 126);
+      ctx.moveTo(256, 126);
+      ctx.lineTo(156, 174);
+      ctx.moveTo(256, 126);
+      ctx.lineTo(356, 174);
       ctx.stroke();
 
-      // 2. Dibuixem la samarreta a sobre i l'omplim de blanc perquè tapi el penja-robes
+      // 2. Samarreta a sobre amb fons blanc perquè tapi l'interior del penja-robes
       ctx.beginPath();
-      ctx.moveTo(202, 162);
-      ctx.quadraticCurveTo(256, 198, 310, 162);
-      ctx.lineTo(372, 180);
-      ctx.lineTo(432, 256);
-      ctx.lineTo(380, 286);
-      ctx.lineTo(348, 242);
-      ctx.lineTo(348, 426);
-      ctx.lineTo(164, 426);
-      ctx.lineTo(164, 242);
-      ctx.lineTo(132, 286);
-      ctx.lineTo(80, 256);
-      ctx.lineTo(140, 180);
+      ctx.moveTo(202, 166);
+      ctx.quadraticCurveTo(256, 202, 310, 166);
+      ctx.lineTo(372, 184);
+      ctx.lineTo(432, 260);
+      ctx.lineTo(380, 290);
+      ctx.lineTo(348, 246);
+      ctx.lineTo(348, 430);
+      ctx.lineTo(164, 430);
+      ctx.lineTo(164, 246);
+      ctx.lineTo(132, 290);
+      ctx.lineTo(80, 260);
+      ctx.lineTo(140, 184);
       ctx.closePath();
 
       ctx.fillStyle = '#FFFFFF';
@@ -58,17 +58,17 @@
 
       // 3. Quadrat, triangle i cercle horitzontals a dins
       ctx.lineWidth = 10;
-      ctx.strokeRect(194, 284, 30, 30);
+      ctx.strokeRect(194, 288, 30, 30);
 
       ctx.beginPath();
-      ctx.moveTo(256, 283);
-      ctx.lineTo(273, 314);
-      ctx.lineTo(239, 314);
+      ctx.moveTo(256, 287);
+      ctx.lineTo(273, 318);
+      ctx.lineTo(239, 318);
       ctx.closePath();
       ctx.stroke();
 
       ctx.beginPath();
-      ctx.arc(303, 299, 15, 0, Math.PI * 2);
+      ctx.arc(303, 303, 15, 0, Math.PI * 2);
       ctx.stroke();
 
       var iconUrl = c.toDataURL('image/png');
@@ -266,7 +266,7 @@
     </div>
   </div>
 
-  <!-- Rentadora (selecció directa per clic) -->
+  <!-- Rentadora (selecció persistent) -->
   <div id="laundryModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-3">
     <div class="bg-white w-full max-w-md rounded-3xl p-5 shadow-2xl flex flex-col gap-4 max-h-[85dvh]">
       <div class="flex items-center justify-between">
@@ -281,13 +281,13 @@
         <button type="button" id="washAllBtn" class="w-full py-3.5 rounded-2xl bg-sky-600 text-white text-sm font-semibold disabled:opacity-40">Rentar-ho tot (Posar rentadora)</button>
       </div>
       <div id="laundryMultiFooter" class="hidden grid grid-cols-2 gap-2.5 pt-1">
-        <button type="button" id="laundryViewSelectedBtn" class="py-3 rounded-2xl bg-slate-900 text-white text-xs font-semibold active:scale-95 transition">Veure</button>
+        <button type="button" id="laundryViewSelectedBtn" class="py-3 rounded-2xl bg-white text-slate-900 border border-slate-200 shadow-sm text-xs font-semibold active:scale-95 transition">Veure</button>
         <button type="button" id="washSelectedBtn" class="py-3 rounded-2xl bg-sky-600 text-white text-xs font-semibold active:scale-95 transition">Treure (Netes)</button>
       </div>
     </div>
   </div>
 
-  <!-- Armari (selecció directa per clic) -->
+  <!-- Armari (selecció persistent) -->
   <div id="closetModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-3">
     <div class="bg-white w-full max-w-md rounded-3xl p-5 shadow-2xl flex flex-col gap-4 max-h-[85dvh]">
       <div class="flex items-center justify-between">
@@ -302,14 +302,14 @@
       </div>
       <div id="closetGrid" class="flex-1 overflow-y-auto grid grid-cols-3 gap-3 min-h-[140px] p-1"></div>
       <div id="closetMultiFooter" class="hidden grid grid-cols-3 gap-2 pt-1">
-        <button type="button" id="closetViewSelectedBtn" class="py-3 rounded-2xl bg-slate-900 text-white text-xs font-semibold active:scale-95 transition">Veure</button>
+        <button type="button" id="closetViewSelectedBtn" class="py-3 rounded-2xl bg-white text-slate-900 border border-slate-200 shadow-sm text-xs font-semibold active:scale-95 transition">Veure</button>
         <button type="button" id="closetToggleLaundryBtn" class="py-3 rounded-2xl bg-sky-600 text-white text-xs font-semibold active:scale-95 transition leading-tight px-1">A la rentadora</button>
         <button type="button" id="closetDeleteSelectedBtn" class="py-3 rounded-2xl bg-rose-500 text-white text-xs font-semibold active:scale-95 transition">Eliminar</button>
       </div>
     </div>
   </div>
 
-  <!-- Visor / Carrusel de peces seleccionades -->
+  <!-- Visor / Carrusel amb accions individuals per peça -->
   <div id="carouselModal" class="hidden fixed inset-0 bg-black/75 backdrop-blur-sm z-[70] flex items-center justify-center p-4">
     <div class="bg-white w-full max-w-sm rounded-3xl p-5 shadow-2xl flex flex-col gap-4">
       <div class="flex items-center justify-between">
@@ -325,7 +325,13 @@
         <button type="button" id="carouselNextBtn" aria-label="Següent" class="hidden absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 shadow text-slate-800 font-bold flex items-center justify-center active:scale-90 transition">&#8250;</button>
       </div>
 
-      <div id="carouselDots" class="flex items-center justify-center gap-1.5 min-h-[12px]"></div>
+      <div id="carouselDots" class="flex items-center justify-center gap-1.5 min-h-[10px]"></div>
+
+      <!-- Accions individuals per la peça actual del carrusel -->
+      <div class="grid grid-cols-2 gap-2.5 pt-1">
+        <button type="button" id="carouselItemLaundryBtn" class="py-3 rounded-2xl bg-sky-600 text-white text-xs font-semibold active:scale-95 transition">A la rentadora</button>
+        <button type="button" id="carouselItemDeleteBtn" class="py-3 rounded-2xl bg-rose-500 text-white text-xs font-semibold active:scale-95 transition">Eliminar</button>
+      </div>
     </div>
   </div>
 
@@ -788,11 +794,14 @@
       renderAll();
     });
 
-    // --- VISOR / CARRUSEL ---
+    // --- VISOR / CARRUSEL AMB ACCIONS INDIVIDUALS ---
     function renderCarousel() {
-      if (!carouselItems.length) return;
-      if (carouselIndex >= carouselItems.length) carouselIndex = 0;
-      if (carouselIndex < 0) carouselIndex = carouselItems.length - 1;
+      if (!carouselItems.length) {
+        document.getElementById('carouselModal').classList.add('hidden');
+        return;
+      }
+      if (carouselIndex >= carouselItems.length) carouselIndex = carouselItems.length - 1;
+      if (carouselIndex < 0) carouselIndex = 0;
 
       var item = carouselItems[carouselIndex];
       var total = carouselItems.length;
@@ -800,6 +809,9 @@
       document.getElementById('carouselCounter').textContent = (carouselIndex + 1) + ' / ' + total;
       document.getElementById('carouselImg').src = item.image;
       document.getElementById('carouselDirtyBadge').classList.toggle('hidden', !item.dirty);
+
+      var itemLaundryBtn = document.getElementById('carouselItemLaundryBtn');
+      itemLaundryBtn.textContent = item.dirty ? 'Treure rentadora' : 'A la rentadora';
 
       var prevBtn = document.getElementById('carouselPrevBtn');
       var nextBtn = document.getElementById('carouselNextBtn');
@@ -819,7 +831,7 @@
 
     function openCarousel(items) {
       if (!items || !items.length) return;
-      carouselItems = items;
+      carouselItems = items.slice();
       carouselIndex = 0;
       renderCarousel();
       document.getElementById('carouselModal').classList.remove('hidden');
@@ -835,6 +847,37 @@
     document.getElementById('carouselNextBtn').addEventListener('click', function () {
       carouselIndex = (carouselIndex + 1) % carouselItems.length;
       renderCarousel();
+    });
+
+    // Botó Rentadora individual dins del carrusel
+    document.getElementById('carouselItemLaundryBtn').addEventListener('click', function () {
+      var item = carouselItems[carouselIndex];
+      if (!item) return;
+      item.dirty = !item.dirty;
+      putItem(item).then(function () {
+        renderCarousel();
+        if (!document.getElementById('closetModal').classList.contains('hidden')) renderClosetModal();
+        if (!document.getElementById('laundryModal').classList.contains('hidden')) renderLaundryModal();
+        renderAll();
+        showToast(item.dirty ? 'Enviat a la rentadora' : 'Tret de la rentadora');
+      });
+    });
+
+    // Botó Eliminar individual dins del carrusel
+    document.getElementById('carouselItemDeleteBtn').addEventListener('click', function () {
+      var item = carouselItems[carouselIndex];
+      if (!item) return;
+      deleteItemFromDB(item.id).then(function () {
+        wardrobe = wardrobe.filter(function (w) { return w.id !== item.id; });
+        closetSelectedIds = closetSelectedIds.filter(function (id) { return id !== item.id; });
+        laundrySelectedIds = laundrySelectedIds.filter(function (id) { return id !== item.id; });
+        carouselItems.splice(carouselIndex, 1);
+
+        if (!document.getElementById('closetModal').classList.contains('hidden')) renderClosetModal();
+        if (!document.getElementById('laundryModal').classList.contains('hidden')) renderLaundryModal();
+        renderAll();
+        renderCarousel();
+      });
     });
 
     (function () {
@@ -863,7 +906,7 @@
       stage.addEventListener('pointercancel', function () { down = false; });
     })();
 
-    // --- RENTADORA (selecció directa amb 1 clic) ---
+    // --- RENTADORA (selecció persistent) ---
     function toggleLaundrySelection(id) {
       var idx = laundrySelectedIds.indexOf(id);
       if (idx !== -1) laundrySelectedIds.splice(idx, 1);
@@ -931,7 +974,6 @@
     document.getElementById('washSelectedBtn').addEventListener('click', function () {
       var targets = wardrobe.filter(function (i) { return laundrySelectedIds.indexOf(i.id) !== -1; });
       Promise.all(targets.map(function (i) { i.dirty = false; return putItem(i); })).then(function () {
-        laundrySelectedIds = [];
         renderLaundryModal();
         renderAll();
         showToast('Roba neta');
@@ -953,7 +995,7 @@
       });
     });
 
-    // --- ARMARI (selecció directa amb 1 clic) ---
+    // --- ARMARI (selecció persistent) ---
     function toggleClosetSelection(id) {
       var idx = closetSelectedIds.indexOf(id);
       if (idx !== -1) closetSelectedIds.splice(idx, 1);
@@ -1026,6 +1068,7 @@
       openCarousel(selectedItems);
     });
 
+    // Manté la selecció activa després d'enviar o treure de la rentadora
     document.getElementById('closetToggleLaundryBtn').addEventListener('click', function () {
       var targets = wardrobe.filter(function (i) { return closetSelectedIds.indexOf(i.id) !== -1; });
       if (!targets.length) return;
@@ -1036,7 +1079,6 @@
         i.dirty = nextDirtyState;
         return putItem(i);
       })).then(function () {
-        closetSelectedIds = [];
         renderClosetModal();
         renderAll();
         showToast(nextDirtyState ? 'Enviat a la rentadora' : 'Tret de la rentadora');
