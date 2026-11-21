@@ -106,13 +106,17 @@
     html, body { margin: 0; padding: 0; height: 100dvh; width: 100vw; overflow: hidden; background: #F5F5F7; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif; color: #1D1D1F; }
     .safe-top { padding-top: max(12px, env(safe-area-inset-top)); }
     .safe-bottom { padding-bottom: max(16px, env(safe-area-inset-bottom)); }
-    .cutout-box { width: min(56vw, 26dvh, 220px); height: min(56vw, 26dvh, 220px); display: flex; align-items: center; justify-content: center; position: relative; touch-action: pan-y; }
-    .cutout-box-shoes { width: min(46vw, 20dvh, 175px); height: min(46vw, 20dvh, 175px); display: flex; align-items: center; justify-content: center; position: relative; touch-action: pan-y; }
-    .cutout-img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 10px 18px rgba(0,0,0,0.14)); pointer-events: none; transition: transform 0.25s cubic-bezier(0.22,1,0.36,1); }
+    .outfit-slot { display: flex; align-items: center; justify-content: center; position: relative; touch-action: pan-y; min-width: 140px; }
+    .cutout-img { width: auto; height: auto; display: block; object-fit: contain; filter: drop-shadow(0 8px 14px rgba(0,0,0,0.13)); pointer-events: none; transition: transform 0.25s cubic-bezier(0.22,1,0.36,1); }
+    .cutout-top { max-height: 25dvh; max-width: 68vw; }
+    .cutout-pants { max-height: 32dvh; max-width: 64vw; }
+    .cutout-shoes { max-height: 14dvh; max-width: 52vw; }
     .checkerboard { background-image: linear-gradient(45deg,#e5e7eb 25%,transparent 25%),linear-gradient(-45deg,#e5e7eb 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#e5e7eb 75%),linear-gradient(-45deg,transparent 75%,#e5e7eb 75%); background-size: 20px 20px; background-position: 0 0,0 10px,10px -10px,-10px 0; }
-    input[type="range"] { -webkit-appearance: none; appearance: none; background: transparent; cursor: pointer; }
-    input[type="range"]::-webkit-slider-runnable-track { height: 6px; border-radius: 999px; background: #E2E8F0; }
-    input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; border-radius: 999px; background: #0F172A; margin-top: -7px; box-shadow: 0 1px 4px rgba(0,0,0,0.25); }
+    .bg-range { -webkit-appearance: none; appearance: none; width: 100%; min-width: 0; height: 28px; background: transparent; cursor: pointer; display: block; }
+    .bg-range::-webkit-slider-runnable-track { width: 100%; height: 6px; border-radius: 999px; background: #CBD5E1; }
+    .bg-range::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; border-radius: 999px; background: #0F172A; border: 2px solid #FFFFFF; margin-top: -7px; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+    .bg-range::-moz-range-track { width: 100%; height: 6px; border-radius: 999px; background: #CBD5E1; }
+    .bg-range::-moz-range-thumb { width: 20px; height: 20px; border-radius: 999px; background: #0F172A; border: 2px solid #FFFFFF; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
   </style>
 </head>
 <body translate="no" class="notranslate flex flex-col justify-between h-[100dvh] w-screen overflow-hidden">
@@ -211,11 +215,13 @@
 
   <input type="file" id="fileInput" accept="image/*" multiple class="hidden" />
 
-  <!-- Peces de roba juntes per veure el conjunt sencer -->
-  <main class="flex-1 flex flex-col items-center justify-center px-6 overflow-hidden relative">
-    <div id="slot-top" data-category="top" class="cutout-box z-30 -mb-4"><div class="slot-content w-full h-full flex items-center justify-center"></div></div>
-    <div id="slot-pants" data-category="pants" class="cutout-box z-20 -my-2"><div class="slot-content w-full h-full flex items-center justify-center"></div></div>
-    <div id="slot-shoes" data-category="shoes" class="cutout-box-shoes z-10 -mt-3"><div class="slot-content w-full h-full flex items-center justify-center"></div></div>
+  <!-- Peces de roba tocant-se per veure el conjunt sencer -->
+  <main class="flex-1 flex flex-col items-center justify-center px-4 overflow-hidden relative">
+    <div id="outfitStack" class="flex flex-col items-center justify-center w-full">
+      <div id="slot-top" data-category="top" class="outfit-slot z-30"><div class="slot-content flex items-center justify-center"></div></div>
+      <div id="slot-pants" data-category="pants" class="outfit-slot z-20 -mt-2"><div class="slot-content flex items-center justify-center"></div></div>
+      <div id="slot-shoes" data-category="shoes" class="outfit-slot z-10 -mt-1.5"><div class="slot-content flex items-center justify-center"></div></div>
+    </div>
 
     <!-- Avís inferior -->
     <div id="toastMsg" class="pointer-events-none opacity-0 transition-opacity duration-300 fixed bottom-24 left-1/2 -translate-x-1/2 bg-slate-900/90 text-white text-xs font-medium px-4 py-2 rounded-full shadow-lg z-40 whitespace-nowrap"></div>
@@ -228,9 +234,9 @@
     </button>
   </footer>
 
-  <!-- Etiquetatge de fotos noves amb ajustament de retall (Opció A) -->
-  <div id="taggingModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[65] flex items-end sm:items-center justify-center p-3">
-    <div class="bg-white w-full max-w-md rounded-3xl p-4 sm:p-5 shadow-2xl flex flex-col gap-3 max-h-[94dvh] overflow-y-auto">
+  <!-- Etiquetatge / Edició de retall amb slider a sobre de la peça -->
+  <div id="taggingModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[75] flex items-end sm:items-center justify-center p-3">
+    <div class="bg-white w-full max-w-md rounded-3xl p-4 sm:p-5 shadow-2xl flex flex-col gap-2.5 max-h-[95dvh] overflow-y-auto">
       <div class="flex items-center justify-between">
         <span id="tagProgressText" class="text-xs font-bold uppercase tracking-wider text-slate-400">Foto 1 de 1</span>
         <div class="flex items-center gap-3">
@@ -239,34 +245,34 @@
         </div>
       </div>
 
-      <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+      <div id="tagProgressTrack" class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
         <div id="tagProgressBar" class="h-full bg-slate-900 transition-all duration-300" style="width:100%"></div>
       </div>
 
-      <!-- Canvas interactiu de previsualització -->
-      <div class="relative w-full h-52 rounded-2xl checkerboard flex items-center justify-center overflow-hidden border border-slate-200 touch-none">
-        <canvas id="tagEditorCanvas" class="w-full h-full object-contain drop-shadow-md cursor-crosshair"></canvas>
-        <div id="bgRemoveBadge" class="hidden absolute bottom-2 right-2 bg-slate-900/80 text-white text-[11px] px-2.5 py-1 rounded-full">Processant...</div>
-      </div>
-
-      <!-- Controls de retall: Slider de tolerància + Modes Esborrar / Restaurar -->
-      <div class="bg-slate-50 rounded-2xl p-3 border border-slate-200/80 flex flex-col gap-2.5">
-        <div class="flex items-center justify-between gap-2">
-          <div class="flex bg-slate-200/80 p-0.5 rounded-xl">
-            <button type="button" id="toolEraseBtn" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-white text-slate-900 shadow-sm transition">Toca per esborrar</button>
-            <button type="button" id="toolRestoreBtn" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold text-slate-600 transition">Restaurar</button>
-          </div>
-          <button type="button" id="resetCutoutBtn" class="text-[11px] font-semibold text-sky-600 px-2 py-1 active:opacity-70">Reiniciar</button>
+      <!-- Previsualització amb el slider a sobre de la peça -->
+      <div class="relative w-full h-56 rounded-2xl checkerboard flex flex-col overflow-hidden border border-slate-200">
+        <div class="z-10 mx-2.5 mt-2.5 px-3 py-1.5 rounded-xl bg-white/95 backdrop-blur shadow-sm border border-slate-200/80 flex items-center gap-2.5">
+          <span class="text-[11px] font-bold text-slate-600 shrink-0">Fons</span>
+          <input type="range" id="toleranceSlider" min="0" max="125" value="48" class="bg-range flex-1" />
+          <span id="toleranceValueText" class="text-[11px] font-bold text-slate-800 w-7 text-right shrink-0">48</span>
         </div>
 
-        <div class="flex items-center gap-3">
-          <span class="text-[11px] font-semibold text-slate-500 shrink-0">Fons</span>
-          <input type="range" id="toleranceSlider" min="8" max="125" value="48" class="flex-1" />
-          <span id="toleranceValueText" class="text-[11px] font-bold text-slate-700 w-7 text-right">48</span>
+        <div class="relative flex-1 w-full min-h-0 flex items-center justify-center p-2 touch-none">
+          <canvas id="tagEditorCanvas" class="w-full h-full object-contain drop-shadow-md cursor-crosshair"></canvas>
+          <div id="bgRemoveBadge" class="hidden absolute bottom-2 right-2 bg-slate-900/85 text-white text-[11px] px-2.5 py-1 rounded-full">Processant...</div>
         </div>
       </div>
 
-      <div class="flex flex-col gap-1.5">
+      <!-- Modes Esborrar / Restaurar -->
+      <div class="flex items-center justify-between gap-2 bg-slate-50 rounded-2xl px-2.5 py-1.5 border border-slate-200/80">
+        <div class="flex bg-slate-200/80 p-0.5 rounded-xl">
+          <button type="button" id="toolEraseBtn" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-white text-slate-900 shadow-sm transition">Toca per esborrar</button>
+          <button type="button" id="toolRestoreBtn" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold text-slate-600 transition">Restaurar</button>
+        </div>
+        <button type="button" id="resetCutoutBtn" class="text-[11px] font-semibold text-sky-600 px-2 py-1 active:opacity-70">Reiniciar</button>
+      </div>
+
+      <div class="flex flex-col gap-1">
         <label class="text-xs font-bold text-slate-700">Quina peça de roba és?</label>
         <div class="grid grid-cols-3 gap-2">
           <button type="button" data-cat="top" class="tag-cat-btn py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700">Samarreta</button>
@@ -275,7 +281,7 @@
         </div>
       </div>
 
-      <div class="flex flex-col gap-1.5">
+      <div class="flex flex-col gap-1">
         <label class="text-xs font-bold text-slate-700">Com és de formal?</label>
         <div class="grid grid-cols-3 gap-2">
           <button type="button" data-form="casual" class="tag-form-btn py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700">Informal</button>
@@ -294,7 +300,7 @@
       <div class="flex items-center justify-between gap-2">
         <h2 id="laundryTitle" class="text-base font-bold text-slate-900 truncate">Rentadora</h2>
         <div class="flex items-center gap-1.5 shrink-0">
-          <button type="button" id="selectAllLaundryBtn" class="hidden h-8 px-3 rounded-full bg-slate-900 text-white text-xs font-semibold active:scale-95 transition">Tot</button>
+          <button type="button" id="selectAllLaundryBtn" class="hidden h-8 px-3 rounded-full bg-white text-slate-900 border border-slate-200 shadow-sm text-xs font-semibold active:scale-95 transition">Tot</button>
           <button type="button" id="cancelLaundrySelectBtn" class="hidden h-8 px-3 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold active:scale-95 transition">Desmarcar</button>
           <button type="button" id="closeLaundryBtn" class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 font-bold">&times;</button>
         </div>
@@ -310,20 +316,29 @@
     </div>
   </div>
 
-  <!-- Armari -->
+  <!-- Armari amb filtres de categoria -->
   <div id="closetModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-3">
-    <div class="bg-white w-full max-w-md rounded-3xl p-5 shadow-2xl flex flex-col gap-4 max-h-[85dvh]">
+    <div class="bg-white w-full max-w-md rounded-3xl p-5 shadow-2xl flex flex-col gap-3 max-h-[86dvh]">
       <div class="flex items-center justify-between gap-2">
         <h2 id="closetTitle" class="text-base font-bold text-slate-900 truncate">Armari</h2>
         <div class="flex items-center gap-1.5 shrink-0">
           <button type="button" id="addInsideClosetBtn" class="h-8 px-3 rounded-full bg-slate-900 text-white text-xs font-semibold flex items-center gap-1 active:scale-95 transition">
             <span class="text-sm leading-none">+</span> Afegir roba
           </button>
-          <button type="button" id="selectAllClosetBtn" class="hidden h-8 px-3 rounded-full bg-slate-900 text-white text-xs font-semibold active:scale-95 transition">Tot</button>
+          <button type="button" id="selectAllClosetBtn" class="hidden h-8 px-3 rounded-full bg-white text-slate-900 border border-slate-200 shadow-sm text-xs font-semibold active:scale-95 transition">Tot</button>
           <button type="button" id="cancelClosetSelectBtn" class="hidden h-8 px-3 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold active:scale-95 transition">Desmarcar</button>
           <button type="button" id="closeClosetBtn" class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 font-bold">&times;</button>
         </div>
       </div>
+
+      <!-- Filtres per categoria -->
+      <div class="flex bg-slate-100 p-1 rounded-full gap-1">
+        <button type="button" data-filter="all" class="closet-filter-btn flex-1 py-1.5 text-[11px] font-semibold rounded-full transition-all">Tot</button>
+        <button type="button" data-filter="top" class="closet-filter-btn flex-1 py-1.5 text-[11px] font-semibold rounded-full transition-all">Samarretes</button>
+        <button type="button" data-filter="pants" class="closet-filter-btn flex-1 py-1.5 text-[11px] font-semibold rounded-full transition-all">Pantalons</button>
+        <button type="button" data-filter="shoes" class="closet-filter-btn flex-1 py-1.5 text-[11px] font-semibold rounded-full transition-all">Sabates</button>
+      </div>
+
       <div id="closetGrid" class="flex-1 overflow-y-auto grid grid-cols-3 gap-3 min-h-[140px] p-1"></div>
       <div id="closetMultiFooter" class="hidden grid grid-cols-3 gap-2 pt-1">
         <button type="button" id="closetViewSelectedBtn" class="py-3 rounded-2xl bg-white text-slate-900 border border-slate-200 shadow-sm text-xs font-semibold active:scale-95 transition">Veure</button>
@@ -333,7 +348,7 @@
     </div>
   </div>
 
-  <!-- Visor / Carrusel amb accions individuals per peça -->
+  <!-- Visor / Carrusel amb accions individuals i re-edició de fons -->
   <div id="carouselModal" class="hidden fixed inset-0 bg-black/75 backdrop-blur-sm z-[70] flex items-center justify-center p-4">
     <div class="bg-white w-full max-w-sm rounded-3xl p-5 shadow-2xl flex flex-col gap-4">
       <div class="flex items-center justify-between">
@@ -351,9 +366,9 @@
 
       <div id="carouselDots" class="flex items-center justify-center gap-1.5 min-h-[10px]"></div>
 
-      <!-- Accions individuals per la peça actual del carrusel -->
-      <div class="grid grid-cols-2 gap-2.5 pt-1">
-        <button type="button" id="carouselItemLaundryBtn" class="py-3 rounded-2xl bg-sky-600 text-white text-xs font-semibold active:scale-95 transition">A la rentadora</button>
+      <div class="grid grid-cols-3 gap-2 pt-1">
+        <button type="button" id="carouselItemEditCutoutBtn" class="py-3 rounded-2xl bg-white text-slate-900 border border-slate-200 shadow-sm text-xs font-semibold active:scale-95 transition">Editar fons</button>
+        <button type="button" id="carouselItemLaundryBtn" class="py-3 rounded-2xl bg-sky-600 text-white text-xs font-semibold active:scale-95 transition leading-tight px-1">A la rentadora</button>
         <button type="button" id="carouselItemDeleteBtn" class="py-3 rounded-2xl bg-rose-500 text-white text-xs font-semibold active:scale-95 transition">Eliminar</button>
       </div>
     </div>
@@ -423,15 +438,15 @@
     }
 
     function makeStarterSVG(category, color) {
-      var path = '';
+      var svg = '';
       if (category === 'top') {
-        path = '<path d="M160 110 L215 90 L280 115 L345 90 L400 110 L445 195 L390 220 L365 175 L365 440 L195 440 L195 175 L170 220 L115 195 Z" fill="' + color + '"/>';
+        svg = '<svg xmlns="http://www.w3.org/2000/svg" width="330" height="350" viewBox="115 90 330 350"><path d="M160 110 L215 90 L280 115 L345 90 L400 110 L445 195 L390 220 L365 175 L365 440 L195 440 L195 175 L170 220 L115 195 Z" fill="' + color + '"/></svg>';
       } else if (category === 'pants') {
-        path = '<path d="M195 90 L365 90 L390 465 L305 465 L280 245 L255 465 L170 465 Z" fill="' + color + '"/>';
+        svg = '<svg xmlns="http://www.w3.org/2000/svg" width="220" height="375" viewBox="170 90 220 375"><path d="M195 90 L365 90 L390 465 L305 465 L280 245 L255 465 L170 465 Z" fill="' + color + '"/></svg>';
       } else {
-        path = '<path d="M115 350 C115 295 170 275 225 275 L265 235 L315 280 C365 295 445 305 445 365 L445 400 L115 400 Z" fill="' + color + '"/>';
+        svg = '<svg xmlns="http://www.w3.org/2000/svg" width="330" height="165" viewBox="115 235 330 165"><path d="M115 350 C115 295 170 275 225 275 L265 235 L315 280 C365 295 445 305 445 365 L445 400 L115 400 Z" fill="' + color + '"/></svg>';
       }
-      return 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="560" height="560" viewBox="0 0 560 560">' + path + '</svg>');
+      return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
     }
 
     var STARTER_ITEMS = [
@@ -445,11 +460,14 @@
     var wardrobe = [];
     var currentFormality = 'casual';
     var currentIndices = { top: 0, pants: 0, shoes: 0 };
+    var lockedSlots = { top: false, pants: false, shoes: false };
+
     var taggingQueue = [];
     var queueIndex = 0;
     var editorToolMode = 'erase';
     var selectedSetupDays = [];
 
+    var closetCategoryFilter = 'all';
     var closetSelectedIds = [];
     var laundrySelectedIds = [];
 
@@ -546,31 +564,54 @@
     });
 
     // --- INTERACTIVE CUTOUT ENGINE (SLIDER + TAP-TO-ERASE + RESTORE BRUSH) ---
+    function loadImageFromDataUrl(dataUrl, preserveExistingAlpha) {
+      return new Promise(function (resolve) {
+        var img = new Image();
+        img.onload = function () {
+          var sc = Math.min(1, 520 / Math.max(img.width, img.height));
+          var w = Math.max(1, Math.round(img.width * sc));
+          var h = Math.max(1, Math.round(img.height * sc));
+          var c = document.createElement('canvas');
+          c.width = w; c.height = h;
+          var ctx = c.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          var origData = ctx.getImageData(0, 0, w, h);
+          var px = origData.data;
+
+          var initialMask = new Uint8Array(w * h);
+          var hasTransparent = false;
+          for (var i = 0, p = 0; i < initialMask.length; i++, p += 4) {
+            if (preserveExistingAlpha && px[p + 3] <= 20) {
+              initialMask[i] = 0;
+              hasTransparent = true;
+            } else {
+              initialMask[i] = 1;
+            }
+          }
+
+          var storedRaw = preserveExistingAlpha ? dataUrl : c.toDataURL('image/jpeg', 0.85);
+          resolve({
+            w: w,
+            h: h,
+            origPixels: px,
+            rawDataUrl: storedRaw,
+            preserveExistingAlpha: preserveExistingAlpha && hasTransparent,
+            initialMask: initialMask,
+            mask: new Uint8Array(initialMask)
+          });
+        };
+        img.onerror = function () { resolve(null); };
+        img.src = dataUrl;
+      });
+    }
+
     function loadImageForEntry(file) {
       return new Promise(function (resolve) {
         var reader = new FileReader();
         reader.onload = function () {
-          var img = new Image();
-          img.onload = function () {
-            var sc = Math.min(1, 520 / Math.max(img.width, img.height));
-            var w = Math.max(1, Math.round(img.width * sc));
-            var h = Math.max(1, Math.round(img.height * sc));
-            var c = document.createElement('canvas');
-            c.width = w; c.height = h;
-            var ctx = c.getContext('2d');
-            ctx.drawImage(img, 0, 0, w, h);
-            var origData = ctx.getImageData(0, 0, w, h);
-            resolve({
-              w: w,
-              h: h,
-              origPixels: origData.data,
-              workCanvas: c,
-              mask: new Uint8Array(w * h)
-            });
-          };
-          img.onerror = function () { resolve(null); };
-          img.src = reader.result;
+          loadImageFromDataUrl(reader.result, false).then(resolve);
         };
+        reader.onerror = function () { resolve(null); };
         reader.readAsDataURL(file);
       });
     }
@@ -580,37 +621,60 @@
       var w = entry.base.w, h = entry.base.h, d = entry.base.origPixels;
       var mask = entry.base.mask;
       var tol = entry.tolerance;
-      mask.fill(1);
 
-      var r = 0, g = 0, b = 0, count = 0;
-      for (var x = 0; x < w; x += Math.max(1, Math.floor(w / 12))) {
-        var topIdx = x * 4;
-        var botIdx = ((h - 1) * w + x) * 4;
-        r += d[topIdx] + d[botIdx];
-        g += d[topIdx + 1] + d[botIdx + 1];
-        b += d[topIdx + 2] + d[botIdx + 2];
-        count += 2;
+      if (entry.base.preserveExistingAlpha) {
+        mask.set(entry.base.initialMask);
+      } else {
+        mask.fill(1);
       }
-      r /= count; g /= count; b /= count;
 
-      var vis = new Uint8Array(w * h);
-      var stack = [];
-      for (var sx = 0; sx < w; sx++) { stack.push(sx); stack.push((h - 1) * w + sx); }
-      for (var sy = 0; sy < h; sy++) { stack.push(sy * w); stack.push(sy * w + (w - 1)); }
+      if (tol > 0) {
+        var patch = Math.min(5, w, h);
+        var corners = [
+          [0, 0],
+          [w - patch, 0],
+          [0, h - patch],
+          [w - patch, h - patch]
+        ];
+        var r = 0, g = 0, b = 0, count = 0;
+        for (var c = 0; c < corners.length; c++) {
+          var cx = corners[c][0], cy = corners[c][1];
+          for (var dy = 0; dy < patch; dy++) {
+            for (var dx = 0; dx < patch; dx++) {
+              var pIdx = ((cy + dy) * w + (cx + dx)) * 4;
+              if (d[pIdx + 3] > 20) {
+                r += d[pIdx];
+                g += d[pIdx + 1];
+                b += d[pIdx + 2];
+                count++;
+              }
+            }
+          }
+        }
+        if (count > 0) {
+          r /= count; g /= count; b /= count;
+          var vis = new Uint8Array(w * h);
+          var stack = [];
+          for (var sx = 0; sx < w; sx++) { stack.push(sx); stack.push((h - 1) * w + sx); }
+          for (var sy = 0; sy < h; sy++) { stack.push(sy * w); stack.push(sy * w + (w - 1)); }
 
-      while (stack.length > 0) {
-        var pos = stack.pop();
-        if (vis[pos]) continue;
-        vis[pos] = 1;
-        var idx = pos * 4;
-        var dist = Math.sqrt(Math.pow(d[idx] - r, 2) + Math.pow(d[idx + 1] - g, 2) + Math.pow(d[idx + 2] - b, 2));
-        if (dist > tol) continue;
-        mask[pos] = 0;
-        var px = pos % w, py = (pos - px) / w;
-        if (px > 0) stack.push(pos - 1);
-        if (px < w - 1) stack.push(pos + 1);
-        if (py > 0) stack.push(pos - w);
-        if (py < h - 1) stack.push(pos + w);
+          while (stack.length > 0) {
+            var pos = stack.pop();
+            if (vis[pos]) continue;
+            vis[pos] = 1;
+            var idx = pos * 4;
+            if (d[idx + 3] > 20) {
+              var dist = Math.sqrt(Math.pow(d[idx] - r, 2) + Math.pow(d[idx + 1] - g, 2) + Math.pow(d[idx + 2] - b, 2));
+              if (dist > tol) continue;
+            }
+            mask[pos] = 0;
+            var px = pos % w, py = (pos - px) / w;
+            if (px > 0) stack.push(pos - 1);
+            if (px < w - 1) stack.push(pos + 1);
+            if (py > 0) stack.push(pos - w);
+            if (py < h - 1) stack.push(pos + w);
+          }
+        }
       }
 
       if (entry.manualEraseSeeds) {
@@ -633,7 +697,7 @@
       var seedPos = y0 * w + x0;
       var sIdx = seedPos * 4;
       var sr = d[sIdx], sg = d[sIdx + 1], sb = d[sIdx + 2];
-      var tol = Math.max(14, entry.tolerance * 0.85);
+      var tol = Math.max(24, entry.tolerance * 0.85);
 
       if (recordSeed) {
         entry.manualEraseSeeds.push({ x: x0, y: y0 });
@@ -680,6 +744,15 @@
       }
     }
 
+    function paintRestoreLine(entry, x1, y1, x2, y2) {
+      var dist = Math.hypot(x2 - x1, y2 - y1);
+      var steps = Math.max(1, Math.ceil(dist / 4));
+      for (var s = 0; s <= steps; s++) {
+        var t = s / steps;
+        paintRestoreAt(entry, x1 + (x2 - x1) * t, y1 + (y2 - y1) * t, true);
+      }
+    }
+
     function renderEntryToEditorCanvas(entry) {
       var canvas = document.getElementById('tagEditorCanvas');
       if (!entry || !entry.base) return;
@@ -695,13 +768,13 @@
         dst[p] = src[p];
         dst[p + 1] = src[p + 1];
         dst[p + 2] = src[p + 2];
-        dst[p + 3] = mask[i] ? src[p + 3] : 0;
+        dst[p + 3] = mask[i] ? (src[p + 3] > 20 ? src[p + 3] : 255) : 0;
       }
       ctx.putImageData(outImg, 0, 0);
     }
 
     function exportCroppedCutoutDataUrl(entry) {
-      if (!entry || !entry.base) return entry ? entry.preview : '';
+      if (!entry || !entry.base) return '';
       var w = entry.base.w, h = entry.base.h, src = entry.base.origPixels, mask = entry.base.mask;
       var tmp = document.createElement('canvas');
       tmp.width = w; tmp.height = h;
@@ -714,7 +787,7 @@
         for (var x = 0; x < w; x++) {
           var pos = y * w + x;
           var p = pos * 4;
-          var alpha = mask[pos] ? src[p + 3] : 0;
+          var alpha = mask[pos] ? (src[p + 3] > 20 ? src[p + 3] : 255) : 0;
           dst[p] = src[p];
           dst[p + 1] = src[p + 1];
           dst[p + 2] = src[p + 2];
@@ -730,17 +803,21 @@
       }
       tctx.putImageData(imgData, 0, 0);
 
-      var out = document.createElement('canvas');
-      out.width = 560; out.height = 560;
-      var octx = out.getContext('2d');
       if (!hasOpaque) {
-        octx.drawImage(tmp, 0, 0, 560, 560);
-        return out.toDataURL('image/png');
+        return entry.base.rawDataUrl || tmp.toDataURL('image/png');
       }
-      var cw = Math.max(1, maxX - minX + 1), ch = Math.max(1, maxY - minY + 1);
-      var sc = Math.min(490 / cw, 490 / ch);
-      var dw = cw * sc, dh = ch * sc;
-      octx.drawImage(tmp, minX, minY, cw, ch, (560 - dw) / 2, (560 - dh) / 2, dw, dh);
+
+      var cw = Math.max(1, maxX - minX + 1);
+      var ch = Math.max(1, maxY - minY + 1);
+      var sc = Math.min(1, 560 / Math.max(cw, ch));
+      var outW = Math.max(1, Math.round(cw * sc));
+      var outH = Math.max(1, Math.round(ch * sc));
+
+      var out = document.createElement('canvas');
+      out.width = outW;
+      out.height = outH;
+      var octx = out.getContext('2d');
+      octx.drawImage(tmp, minX, minY, cw, ch, 0, 0, outW, outH);
       return out.toDataURL('image/png');
     }
 
@@ -761,6 +838,8 @@
       return wardrobe.filter(function (i) { return i.isStarter && i.category === cat && i.formalities.indexOf(currentFormality) !== -1; });
     }
 
+    var LOCK_ICON_HTML = '<span class="absolute top-1 right-1 w-6 h-6 rounded-full bg-slate-900/85 text-white shadow-md flex items-center justify-center pointer-events-none"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>';
+
     function renderAll() {
       document.querySelectorAll('.formality-btn').forEach(function (btn) {
         var active = btn.dataset.formality === currentFormality;
@@ -774,11 +853,13 @@
         var box = document.getElementById('slot-' + cat).querySelector('.slot-content');
         var list = getCleanItemsFor(cat);
         if (list.length === 0) {
-          box.innerHTML = '<div class="w-32 h-32 px-3 rounded-full border-2 border-dashed border-slate-300 flex items-center justify-center text-center text-slate-400 text-xs font-medium leading-tight">' + EMPTY_LABELS[cat] + '</div>';
+          lockedSlots[cat] = false;
+          box.innerHTML = '<div class="w-28 h-28 my-1 px-3 rounded-full border-2 border-dashed border-slate-300 flex items-center justify-center text-center text-slate-400 text-xs font-medium leading-tight">' + EMPTY_LABELS[cat] + '</div>';
           return;
         }
         if (currentIndices[cat] >= list.length) currentIndices[cat] = 0;
-        box.innerHTML = '<img src="' + list[currentIndices[cat]].image + '" alt="" class="cutout-img" />';
+        var lockBadge = lockedSlots[cat] ? LOCK_ICON_HTML : '';
+        box.innerHTML = '<div class="relative inline-flex items-center justify-center"><img src="' + list[currentIndices[cat]].image + '" alt="" class="cutout-img cutout-' + cat + '" />' + lockBadge + '</div>';
       });
 
       var dirtyCount = wardrobe.filter(function (i) { return !i.isStarter && i.dirty; }).length;
@@ -788,9 +869,21 @@
     }
 
     function nextItem(cat) {
+      if (lockedSlots[cat]) {
+        showToast('Bloquejat · Llisca a la dreta per desbloquejar');
+        return;
+      }
       var list = getCleanItemsFor(cat);
       if (list.length <= 1) return;
       currentIndices[cat] = (currentIndices[cat] + 1) % list.length;
+      renderAll();
+    }
+
+    function toggleSlotLock(cat) {
+      var list = getCleanItemsFor(cat);
+      if (!list.length) return;
+      lockedSlots[cat] = !lockedSlots[cat];
+      showToast(lockedSlots[cat] ? 'Peça bloquejada' : 'Peça desbloquejada');
       renderAll();
     }
 
@@ -799,6 +892,7 @@
       if (!list.length) return;
       var item = list[currentIndices[cat]];
       if (item.isStarter) return;
+      lockedSlots[cat] = false;
       item.dirty = true;
       putItem(item).then(function () { showToast('Enviat a la rentadora'); renderAll(); });
     }
@@ -818,7 +912,8 @@
         down = false;
         var img = el.querySelector('.cutout-img');
         if (img) { img.style.transition = 'transform 0.25s ease'; img.style.transform = 'translateX(0) rotate(0)'; }
-        if (dx > 55 || Math.abs(dx) < 10) nextItem(cat);
+        if (Math.abs(dx) < 10) nextItem(cat);
+        else if (dx > 55) toggleSlotLock(cat);
         else if (dx < -55) sendToLaundry(cat);
       }
       el.addEventListener('pointerup', finish);
@@ -862,11 +957,11 @@
     document.getElementById('resetCutoutBtn').addEventListener('click', function () {
       var cur = taggingQueue[queueIndex];
       if (!cur || !cur.base) return;
-      cur.tolerance = 48;
+      cur.tolerance = cur.base.preserveExistingAlpha ? 0 : 48;
       cur.manualEraseSeeds = [];
       cur.manualRestorePoints = [];
-      document.getElementById('toleranceSlider').value = '48';
-      document.getElementById('toleranceValueText').textContent = '48';
+      document.getElementById('toleranceSlider').value = String(cur.tolerance);
+      document.getElementById('toleranceValueText').textContent = String(cur.tolerance);
       recomputeMaskFromTolerance(cur);
       renderEntryToEditorCanvas(cur);
     });
@@ -874,6 +969,7 @@
     (function () {
       var canvas = document.getElementById('tagEditorCanvas');
       var paintingRestore = false;
+      var lastPt = null;
 
       function getCanvasPixelCoords(e) {
         var rect = canvas.getBoundingClientRect();
@@ -900,6 +996,7 @@
           renderEntryToEditorCanvas(cur);
         } else {
           paintingRestore = true;
+          lastPt = pt;
           canvas.setPointerCapture(e.pointerId);
           paintRestoreAt(cur, pt.x, pt.y, true);
           renderEntryToEditorCanvas(cur);
@@ -912,11 +1009,16 @@
         if (!cur || !cur.base) return;
         var pt = getCanvasPixelCoords(e);
         if (!pt) return;
-        paintRestoreAt(cur, pt.x, pt.y, true);
+        if (lastPt) {
+          paintRestoreLine(cur, lastPt.x, lastPt.y, pt.x, pt.y);
+        } else {
+          paintRestoreAt(cur, pt.x, pt.y, true);
+        }
+        lastPt = pt;
         renderEntryToEditorCanvas(cur);
       });
 
-      function stopPaint() { paintingRestore = false; }
+      function stopPaint() { paintingRestore = false; lastPt = null; }
       canvas.addEventListener('pointerup', stopPaint);
       canvas.addEventListener('pointercancel', stopPaint);
     })();
@@ -924,8 +1026,17 @@
     function updateTaggingUI() {
       var cur = taggingQueue[queueIndex];
       if (!cur) return;
-      document.getElementById('tagProgressText').textContent = 'Foto ' + (queueIndex + 1) + ' de ' + taggingQueue.length;
+      var isEditingExisting = Boolean(cur.existingItem);
+
+      document.getElementById('tagProgressText').textContent = isEditingExisting
+        ? 'Editar peça'
+        : ('Foto ' + (queueIndex + 1) + ' de ' + taggingQueue.length);
+
+      document.getElementById('tagProgressTrack').classList.toggle('hidden', isEditingExisting);
       document.getElementById('tagProgressBar').style.width = (((queueIndex + 1) / taggingQueue.length) * 100) + '%';
+      document.getElementById('skipPhotoBtn').classList.toggle('hidden', isEditingExisting);
+      document.getElementById('cancelQueueBtn').textContent = isEditingExisting ? 'Cancel·lar' : 'Cancel·lar tot';
+
       document.getElementById('bgRemoveBadge').classList.toggle('hidden', !cur.processing);
       document.getElementById('toleranceSlider').value = String(cur.tolerance);
       document.getElementById('toleranceValueText').textContent = String(cur.tolerance);
@@ -933,6 +1044,9 @@
 
       if (cur.base) {
         renderEntryToEditorCanvas(cur);
+      } else {
+        var c = document.getElementById('tagEditorCanvas');
+        c.getContext('2d').clearRect(0, 0, c.width, c.height);
       }
 
       document.querySelectorAll('.tag-cat-btn').forEach(function (b) {
@@ -945,8 +1059,10 @@
       });
 
       var saveBtn = document.getElementById('saveTagBtn');
-      saveBtn.disabled = !cur.category || cur.formalities.length === 0 || cur.processing;
-      saveBtn.textContent = queueIndex === taggingQueue.length - 1 ? 'Desar i acabar' : 'Desar i següent';
+      saveBtn.disabled = !cur.category || cur.formalities.length === 0 || cur.processing || !cur.base;
+      saveBtn.textContent = isEditingExisting
+        ? 'Desar canvis'
+        : (queueIndex === taggingQueue.length - 1 ? 'Desar i acabar' : 'Desar i següent');
     }
 
     function nextInQueue() {
@@ -961,11 +1077,48 @@
         if (!document.getElementById('closetModal').classList.contains('hidden')) {
           renderClosetModal();
         }
+        if (!document.getElementById('laundryModal').classList.contains('hidden')) {
+          renderLaundryModal();
+        }
       }
+    }
+
+    function openCutoutEditorForExistingItem(item) {
+      if (!item) return;
+      var hasRaw = Boolean(item.rawImage);
+      var savedState = item.cutoutState || {};
+      var initTol = hasRaw ? (typeof savedState.tolerance === 'number' ? savedState.tolerance : 48) : 0;
+
+      taggingQueue = [{
+        id: item.id,
+        existingItem: item,
+        base: null,
+        tolerance: initTol,
+        manualEraseSeeds: hasRaw && savedState.manualEraseSeeds ? savedState.manualEraseSeeds.map(function (s) { return { x: s.x, y: s.y }; }) : [],
+        manualRestorePoints: hasRaw && savedState.manualRestorePoints ? savedState.manualRestorePoints.map(function (p) { return { x: p.x, y: p.y }; }) : [],
+        processing: true,
+        category: item.category,
+        formalities: item.formalities.slice()
+      }];
+      queueIndex = 0;
+      editorToolMode = 'erase';
+      document.getElementById('carouselModal').classList.add('hidden');
+      document.getElementById('taggingModal').classList.remove('hidden');
+      updateTaggingUI();
+
+      loadImageFromDataUrl(hasRaw ? item.rawImage : item.image, !hasRaw).then(function (baseData) {
+        var entry = taggingQueue[0];
+        if (!entry) return;
+        entry.base = baseData;
+        if (baseData) recomputeMaskFromTolerance(entry);
+        entry.processing = false;
+        updateTaggingUI();
+      });
     }
 
     function randomizeIndices() {
       ['top', 'pants', 'shoes'].forEach(function (cat) {
+        if (lockedSlots[cat]) return;
         var list = getCleanItemsFor(cat);
         if (list.length > 0) currentIndices[cat] = Math.floor(Math.random() * list.length);
       });
@@ -975,6 +1128,7 @@
       btn.addEventListener('click', function () {
         currentFormality = btn.dataset.pick;
         currentIndices = { top: 0, pants: 0, shoes: 0 };
+        lockedSlots = { top: false, pants: false, shoes: false };
         randomizeIndices();
         renderAll();
         var overlay = document.getElementById('welcomeOverlay');
@@ -984,12 +1138,18 @@
     });
 
     document.querySelectorAll('.formality-btn').forEach(function (b) {
-      b.addEventListener('click', function () { currentFormality = b.dataset.formality; currentIndices = { top: 0, pants: 0, shoes: 0 }; renderAll(); });
+      b.addEventListener('click', function () {
+        currentFormality = b.dataset.formality;
+        currentIndices = { top: 0, pants: 0, shoes: 0 };
+        lockedSlots = { top: false, pants: false, shoes: false };
+        renderAll();
+      });
     });
     ['top', 'pants', 'shoes'].forEach(attachSwipe);
 
     document.getElementById('shuffleBtn').addEventListener('click', function () {
       ['top', 'pants', 'shoes'].forEach(function (cat) {
+        if (lockedSlots[cat]) return;
         var list = getCleanItemsFor(cat);
         if (list.length > 1) currentIndices[cat] = (currentIndices[cat] + 1 + Math.floor(Math.random() * (list.length - 1))) % list.length;
       });
@@ -1009,7 +1169,6 @@
         return {
           id: 'item-' + Date.now() + '-' + i,
           file: f,
-          preview: URL.createObjectURL(f),
           base: null,
           tolerance: 48,
           manualEraseSeeds: [],
@@ -1027,7 +1186,7 @@
       taggingQueue.forEach(function (entry, idx) {
         loadImageForEntry(entry.file).then(function (baseData) {
           entry.base = baseData;
-          recomputeMaskFromTolerance(entry);
+          if (baseData) recomputeMaskFromTolerance(entry);
           entry.processing = false;
           if (queueIndex === idx) updateTaggingUI();
         });
@@ -1051,7 +1210,40 @@
     document.getElementById('saveTagBtn').addEventListener('click', function () {
       var cur = taggingQueue[queueIndex];
       var finalCutout = exportCroppedCutoutDataUrl(cur);
-      var item = { id: cur.id, category: cur.category, formalities: cur.formalities.slice(), image: finalCutout, dirty: false, isStarter: false };
+      if (!finalCutout) { nextInQueue(); return; }
+
+      var cutoutState = {
+        tolerance: cur.tolerance,
+        manualEraseSeeds: cur.manualEraseSeeds.slice(),
+        manualRestorePoints: cur.manualRestorePoints.slice()
+      };
+
+      if (cur.existingItem) {
+        var existing = cur.existingItem;
+        existing.category = cur.category;
+        existing.formalities = cur.formalities.slice();
+        existing.image = finalCutout;
+        if (!existing.rawImage && cur.base && cur.base.rawDataUrl) {
+          existing.rawImage = cur.base.rawDataUrl;
+        }
+        existing.cutoutState = cutoutState;
+        putItem(existing).then(function () {
+          showToast('Canvis desats');
+          nextInQueue();
+        });
+        return;
+      }
+
+      var item = {
+        id: cur.id,
+        category: cur.category,
+        formalities: cur.formalities.slice(),
+        image: finalCutout,
+        rawImage: cur.base ? cur.base.rawDataUrl : null,
+        cutoutState: cutoutState,
+        dirty: false,
+        isStarter: false
+      };
       putItem(item).then(function () { wardrobe.push(item); nextInQueue(); });
     });
     document.getElementById('skipPhotoBtn').addEventListener('click', nextInQueue);
@@ -1114,6 +1306,12 @@
     document.getElementById('carouselNextBtn').addEventListener('click', function () {
       carouselIndex = (carouselIndex + 1) % carouselItems.length;
       renderCarousel();
+    });
+
+    document.getElementById('carouselItemEditCutoutBtn').addEventListener('click', function () {
+      var item = carouselItems[carouselIndex];
+      if (!item) return;
+      openCutoutEditorForExistingItem(item);
     });
 
     document.getElementById('carouselItemLaundryBtn').addEventListener('click', function () {
@@ -1270,7 +1468,13 @@
       });
     });
 
-    // --- ARMARI ---
+    // --- ARMARI AMB FILTRES ---
+    function getFilteredClosetItems() {
+      var real = wardrobe.filter(function (i) { return !i.isStarter; });
+      if (closetCategoryFilter === 'all') return real;
+      return real.filter(function (i) { return i.category === closetCategoryFilter; });
+    }
+
     function toggleClosetSelection(id) {
       var idx = closetSelectedIds.indexOf(id);
       if (idx !== -1) closetSelectedIds.splice(idx, 1);
@@ -1279,17 +1483,25 @@
     }
 
     function renderClosetModal() {
-      var real = wardrobe.filter(function (i) { return !i.isStarter; });
+      document.querySelectorAll('.closet-filter-btn').forEach(function (btn) {
+        var active = btn.dataset.filter === closetCategoryFilter;
+        btn.classList.toggle('bg-white', active);
+        btn.classList.toggle('text-slate-900', active);
+        btn.classList.toggle('shadow-sm', active);
+        btn.classList.toggle('text-slate-500', !active);
+      });
+
+      var visibleItems = getFilteredClosetItems();
       closetSelectedIds = closetSelectedIds.filter(function (id) {
-        return real.some(function (r) { return r.id === id; });
+        return visibleItems.some(function (r) { return r.id === id; });
       });
 
       var selectedItems = closetSelectedIds.map(function (id) {
-        return real.find(function (r) { return r.id === id; });
+        return visibleItems.find(function (r) { return r.id === id; });
       }).filter(Boolean);
 
       var hasSelection = selectedItems.length > 0;
-      var allSelected = real.length > 0 && selectedItems.length === real.length;
+      var allSelected = visibleItems.length > 0 && selectedItems.length === visibleItems.length;
       var grid = document.getElementById('closetGrid');
       var titleEl = document.getElementById('closetTitle');
       var addBtn = document.getElementById('addInsideClosetBtn');
@@ -1318,7 +1530,11 @@
         multiFooter.classList.add('hidden');
       }
 
-      grid.innerHTML = real.length ? real.map(function (i) {
+      var emptyMsg = closetCategoryFilter === 'all'
+        ? 'Encara no hi ha roba a l\'armari'
+        : 'Cap peça en aquesta categoria';
+
+      grid.innerHTML = visibleItems.length ? visibleItems.map(function (i) {
         var isSelected = closetSelectedIds.indexOf(i.id) !== -1;
         var ringClass = isSelected ? 'ring-2 ring-sky-600 bg-sky-50' : 'bg-slate-100';
         var dirtyDot = i.dirty ? '<span class="absolute bottom-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-sky-500"></span>' : '';
@@ -1326,7 +1542,7 @@
           ? '<span class="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-sky-600 text-white flex items-center justify-center text-[11px] font-bold">&#10003;</span>'
           : '';
         return '<button type="button" data-id="' + i.id + '" class="closet-item-btn aspect-square rounded-2xl ' + ringClass + ' p-2 flex items-center justify-center relative active:scale-95 transition"><img src="' + i.image + '" class="w-full h-full object-contain pointer-events-none"/>' + dirtyDot + checkBadge + '</button>';
-      }).join('') : '<div class="col-span-3 text-center text-xs text-slate-400 py-10">Encara no hi ha roba a l\'armari</div>';
+      }).join('') : '<div class="col-span-3 text-center text-xs text-slate-400 py-10">' + emptyMsg + '</div>';
 
       grid.querySelectorAll('.closet-item-btn').forEach(function (b) {
         b.addEventListener('click', function () {
@@ -1335,9 +1551,17 @@
       });
     }
 
+    document.querySelectorAll('.closet-filter-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        closetCategoryFilter = btn.dataset.filter;
+        closetSelectedIds = [];
+        renderClosetModal();
+      });
+    });
+
     document.getElementById('selectAllClosetBtn').addEventListener('click', function () {
-      var real = wardrobe.filter(function (i) { return !i.isStarter; });
-      closetSelectedIds = real.map(function (i) { return i.id; });
+      var visibleItems = getFilteredClosetItems();
+      closetSelectedIds = visibleItems.map(function (i) { return i.id; });
       renderClosetModal();
     });
 
@@ -1380,6 +1604,7 @@
     });
 
     document.getElementById('closetBtn').addEventListener('click', function () {
+      closetCategoryFilter = 'all';
       closetSelectedIds = [];
       renderClosetModal();
       document.getElementById('closetModal').classList.remove('hidden');

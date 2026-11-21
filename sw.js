@@ -1,4 +1,4 @@
-const CACHE_NAME = 'armari-v13';
+const CACHE_NAME = 'armari-v15';
 const ASSETS = ['./', './index.html', './manifest.json'];
 
 self.addEventListener('install', (event) => {
