@@ -23,52 +23,52 @@
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
 
-      // Penja-robes (només sobresurt el ganxo per sobre del coll)
+      // Penja-robes (només el ganxo sobresurt per dalt)
       ctx.beginPath();
-      ctx.arc(256, 84, 22, Math.PI * 0.9, Math.PI * 2.15);
-      ctx.quadraticCurveTo(278, 114, 256, 124);
-      ctx.lineTo(256, 152);
+      ctx.arc(256, 78, 21, Math.PI * 0.9, Math.PI * 2.15);
+      ctx.quadraticCurveTo(277, 108, 256, 118);
+      ctx.lineTo(256, 144);
       ctx.stroke();
 
-      // Part interior del penja-robes dins de l'obertura del coll
+      // Part interior del penja-robes ben endins del coll
       ctx.lineWidth = 10;
       ctx.beginPath();
-      ctx.moveTo(214, 166);
-      ctx.lineTo(256, 148);
-      ctx.lineTo(298, 166);
+      ctx.moveTo(212, 162);
+      ctx.lineTo(256, 142);
+      ctx.lineTo(300, 162);
       ctx.stroke();
 
-      // Samarreta pujada perquè les espatlles tapin el penja-robes
+      // Samarreta pujada perquè el penja-robes quedi més endins
       ctx.lineWidth = 14;
       ctx.beginPath();
-      ctx.moveTo(202, 150);
-      ctx.quadraticCurveTo(256, 184, 310, 150);
-      ctx.lineTo(372, 170);
-      ctx.lineTo(432, 246);
-      ctx.lineTo(380, 276);
-      ctx.lineTo(348, 232);
-      ctx.lineTo(348, 422);
-      ctx.lineTo(164, 422);
-      ctx.lineTo(164, 232);
-      ctx.lineTo(132, 276);
-      ctx.lineTo(80, 246);
-      ctx.lineTo(140, 170);
+      ctx.moveTo(198, 134);
+      ctx.quadraticCurveTo(256, 178, 314, 134);
+      ctx.lineTo(376, 156);
+      ctx.lineTo(436, 234);
+      ctx.lineTo(382, 266);
+      ctx.lineTo(350, 220);
+      ctx.lineTo(350, 414);
+      ctx.lineTo(162, 414);
+      ctx.lineTo(162, 220);
+      ctx.lineTo(130, 266);
+      ctx.lineTo(76, 234);
+      ctx.lineTo(136, 156);
       ctx.closePath();
       ctx.stroke();
 
       // Quadrat, triangle i cercle horitzontals
       ctx.lineWidth = 10;
-      ctx.strokeRect(194, 278, 30, 30);
+      ctx.strokeRect(194, 268, 30, 30);
 
       ctx.beginPath();
-      ctx.moveTo(256, 277);
-      ctx.lineTo(273, 308);
-      ctx.lineTo(239, 308);
+      ctx.moveTo(256, 267);
+      ctx.lineTo(273, 298);
+      ctx.lineTo(239, 298);
       ctx.closePath();
       ctx.stroke();
 
       ctx.beginPath();
-      ctx.arc(303, 293, 15, 0, Math.PI * 2);
+      ctx.arc(303, 283, 15, 0, Math.PI * 2);
       ctx.stroke();
 
       var iconUrl = c.toDataURL('image/png');
@@ -213,7 +213,7 @@
     <div id="slot-pants" data-category="pants" class="cutout-box"><div class="slot-content w-full h-full flex items-center justify-center"></div></div>
     <div id="slot-shoes" data-category="shoes" class="cutout-box"><div class="slot-content w-full h-full flex items-center justify-center"></div></div>
 
-    <!-- Avís inferior només per la rentadora -->
+    <!-- Avís inferior -->
     <div id="toastMsg" class="pointer-events-none opacity-0 transition-opacity duration-300 fixed bottom-24 left-1/2 -translate-x-1/2 bg-slate-900/90 text-white text-xs font-medium px-4 py-2 rounded-full shadow-lg z-40 whitespace-nowrap"></div>
   </main>
 
@@ -266,13 +266,13 @@
     </div>
   </div>
 
-  <!-- Rentadora (amb selecció múltiple mantenint premut) -->
+  <!-- Rentadora (selecció amb un clic) -->
   <div id="laundryModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-3">
     <div class="bg-white w-full max-w-md rounded-3xl p-5 shadow-2xl flex flex-col gap-4 max-h-[85dvh]">
       <div class="flex items-center justify-between">
         <h2 id="laundryTitle" class="text-base font-bold text-slate-900">Rentadora</h2>
         <div class="flex items-center gap-2">
-          <button type="button" id="cancelLaundrySelectBtn" class="hidden h-8 px-3 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold">Cancel·lar</button>
+          <button type="button" id="cancelLaundrySelectBtn" class="hidden h-8 px-3 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold">Desmarcar</button>
           <button type="button" id="closeLaundryBtn" class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 font-bold">&times;</button>
         </div>
       </div>
@@ -280,13 +280,14 @@
       <div id="laundryNormalFooter">
         <button type="button" id="washAllBtn" class="w-full py-3.5 rounded-2xl bg-sky-600 text-white text-sm font-semibold disabled:opacity-40">Rentar-ho tot (Posar rentadora)</button>
       </div>
-      <div id="laundryMultiFooter" class="hidden">
-        <button type="button" id="washSelectedBtn" disabled class="w-full py-3.5 rounded-2xl bg-sky-600 text-white text-sm font-semibold disabled:opacity-40">Treure seleccionades (Netes)</button>
+      <div id="laundryMultiFooter" class="hidden grid grid-cols-2 gap-2.5 pt-1">
+        <button type="button" id="laundryViewSelectedBtn" class="py-3 rounded-2xl bg-slate-900 text-white text-xs font-semibold active:scale-95 transition">Veure</button>
+        <button type="button" id="washSelectedBtn" class="py-3 rounded-2xl bg-sky-600 text-white text-xs font-semibold active:scale-95 transition">Treure (Netes)</button>
       </div>
     </div>
   </div>
 
-  <!-- Armari (amb selecció múltiple mantenint premut) -->
+  <!-- Armari (selecció amb un clic) -->
   <div id="closetModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-3">
     <div class="bg-white w-full max-w-md rounded-3xl p-5 shadow-2xl flex flex-col gap-4 max-h-[85dvh]">
       <div class="flex items-center justify-between">
@@ -295,26 +296,36 @@
           <button type="button" id="addInsideClosetBtn" class="h-8 px-3 rounded-full bg-slate-900 text-white text-xs font-semibold flex items-center gap-1 active:scale-95 transition">
             <span class="text-sm leading-none">+</span> Afegir roba
           </button>
-          <button type="button" id="cancelClosetSelectBtn" class="hidden h-8 px-3 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold">Cancel·lar</button>
+          <button type="button" id="cancelClosetSelectBtn" class="hidden h-8 px-3 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold">Desmarcar</button>
           <button type="button" id="closeClosetBtn" class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 font-bold">&times;</button>
         </div>
       </div>
       <div id="closetGrid" class="flex-1 overflow-y-auto grid grid-cols-3 gap-3 min-h-[140px] p-1"></div>
-      <div id="closetMultiFooter" class="hidden grid grid-cols-2 gap-2.5 pt-1">
-        <button type="button" id="closetSendSelectedLaundryBtn" disabled class="py-3 rounded-2xl bg-sky-600 text-white text-xs font-semibold disabled:opacity-40">A la rentadora</button>
-        <button type="button" id="closetDeleteSelectedBtn" disabled class="py-3 rounded-2xl bg-rose-500 text-white text-xs font-semibold disabled:opacity-40">Eliminar</button>
+      <div id="closetMultiFooter" class="hidden grid grid-cols-3 gap-2 pt-1">
+        <button type="button" id="closetViewSelectedBtn" class="py-3 rounded-2xl bg-slate-900 text-white text-xs font-semibold active:scale-95 transition">Veure</button>
+        <button type="button" id="closetToggleLaundryBtn" class="py-3 rounded-2xl bg-sky-600 text-white text-xs font-semibold active:scale-95 transition leading-tight px-1">A la rentadora</button>
+        <button type="button" id="closetDeleteSelectedBtn" class="py-3 rounded-2xl bg-rose-500 text-white text-xs font-semibold active:scale-95 transition">Eliminar</button>
       </div>
     </div>
   </div>
 
-  <!-- Opcions d'una sola peça -->
-  <div id="itemActionModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] flex items-center justify-center p-5">
-    <div class="bg-white w-full max-w-xs rounded-3xl p-5 shadow-2xl flex flex-col gap-4 text-center">
-      <div class="w-28 h-28 mx-auto rounded-2xl bg-slate-100 p-2 flex items-center justify-center">
-        <img id="actionItemImg" src="" alt="" class="w-full h-full object-contain" />
+  <!-- Visor / Carrusel de peces seleccionades -->
+  <div id="carouselModal" class="hidden fixed inset-0 bg-black/75 backdrop-blur-sm z-[70] flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-sm rounded-3xl p-5 shadow-2xl flex flex-col gap-4">
+      <div class="flex items-center justify-between">
+        <span id="carouselCounter" class="text-xs font-bold text-slate-500">1 / 1</span>
+        <button type="button" id="closeCarouselBtn" class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 font-bold">&times;</button>
       </div>
-      <div id="actionButtonsContainer" class="flex flex-col gap-2"></div>
-      <button type="button" id="closeItemActionBtn" class="w-full py-2.5 rounded-2xl bg-slate-100 text-slate-600 text-xs font-semibold">Cancel·lar</button>
+
+      <div id="carouselStage" class="relative w-full aspect-square rounded-2xl bg-slate-100 flex items-center justify-center overflow-hidden touch-pan-y">
+        <img id="carouselImg" src="" alt="" class="w-4/5 h-4/5 object-contain drop-shadow-md pointer-events-none transition-transform duration-200" />
+        <span id="carouselDirtyBadge" class="hidden absolute top-3 left-3 px-2.5 py-1 rounded-full bg-sky-600 text-white text-[11px] font-semibold">A la rentadora</span>
+
+        <button type="button" id="carouselPrevBtn" aria-label="Anterior" class="hidden absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 shadow text-slate-800 font-bold flex items-center justify-center active:scale-90 transition">&#8249;</button>
+        <button type="button" id="carouselNextBtn" aria-label="Següent" class="hidden absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 shadow text-slate-800 font-bold flex items-center justify-center active:scale-90 transition">&#8250;</button>
+      </div>
+
+      <div id="carouselDots" class="flex items-center justify-center gap-1.5 min-h-[12px]"></div>
     </div>
   </div>
 
@@ -408,10 +419,11 @@
     var queueIndex = 0;
     var selectedSetupDays = [];
 
-    var closetMultiMode = false;
     var closetSelectedIds = [];
-    var laundryMultiMode = false;
     var laundrySelectedIds = [];
+
+    var carouselItems = [];
+    var carouselIndex = 0;
 
     function getTodayDateString() {
       var now = new Date();
@@ -581,9 +593,9 @@
     }
 
     var toastTimer = null;
-    function showLaundryToast() {
+    function showToast(msg) {
       var el = document.getElementById('toastMsg');
-      el.textContent = 'Enviat a la rentadora';
+      el.textContent = msg || 'Enviat a la rentadora';
       el.style.opacity = '1';
       clearTimeout(toastTimer);
       toastTimer = setTimeout(function () { el.style.opacity = '0'; }, 1600);
@@ -636,7 +648,7 @@
       var item = list[currentIndices[cat]];
       if (item.isStarter) return;
       item.dirty = true;
-      putItem(item).then(function () { showLaundryToast(); renderAll(); });
+      putItem(item).then(function () { showToast('Enviat a la rentadora'); renderAll(); });
     }
 
     function attachSwipe(cat) {
@@ -776,154 +788,110 @@
       renderAll();
     });
 
-    function bindTapAndHold(btn, onTap, onHold) {
-      var timer = null;
-      var held = false;
-      var moved = false;
-      var startX = 0, startY = 0;
+    // --- VISOR / CARRUSEL ---
+    function renderCarousel() {
+      if (!carouselItems.length) return;
+      if (carouselIndex >= carouselItems.length) carouselIndex = 0;
+      if (carouselIndex < 0) carouselIndex = carouselItems.length - 1;
 
-      btn.addEventListener('pointerdown', function (e) {
-        held = false;
-        moved = false;
-        startX = e.clientX;
-        startY = e.clientY;
-        clearTimeout(timer);
-        timer = setTimeout(function () {
-          if (!moved) {
-            held = true;
-            if (navigator.vibrate) navigator.vibrate(25);
-            onHold();
-          }
-        }, 420);
-      });
+      var item = carouselItems[carouselIndex];
+      var total = carouselItems.length;
 
-      btn.addEventListener('pointermove', function (e) {
-        if (Math.abs(e.clientX - startX) > 10 || Math.abs(e.clientY - startY) > 10) {
-          moved = true;
-          clearTimeout(timer);
-        }
-      });
+      document.getElementById('carouselCounter').textContent = (carouselIndex + 1) + ' / ' + total;
+      document.getElementById('carouselImg').src = item.image;
+      document.getElementById('carouselDirtyBadge').classList.toggle('hidden', !item.dirty);
 
-      btn.addEventListener('pointerup', function () {
-        clearTimeout(timer);
-        if (!held && !moved) {
-          onTap();
-        }
-      });
+      var prevBtn = document.getElementById('carouselPrevBtn');
+      var nextBtn = document.getElementById('carouselNextBtn');
+      prevBtn.classList.toggle('hidden', total <= 1);
+      nextBtn.classList.toggle('hidden', total <= 1);
 
-      btn.addEventListener('pointercancel', function () {
-        clearTimeout(timer);
-      });
-    }
-
-    function openItemActionSheet(item, context) {
-      document.getElementById('actionItemImg').src = item.image;
-      var container = document.getElementById('actionButtonsContainer');
-      container.innerHTML = '';
-
-      if (context === 'laundry') {
-        var cleanBtn = document.createElement('button');
-        cleanBtn.type = 'button';
-        cleanBtn.className = 'w-full py-3 rounded-2xl bg-sky-600 text-white text-sm font-semibold active:scale-98 transition';
-        cleanBtn.textContent = 'Treure de la rentadora (Neta)';
-        cleanBtn.addEventListener('click', function () {
-          item.dirty = false;
-          putItem(item).then(function () {
-            document.getElementById('itemActionModal').classList.add('hidden');
-            renderLaundryModal();
-            renderAll();
-          });
-        });
-        container.appendChild(cleanBtn);
-      } else if (context === 'closet') {
-        if (!item.dirty) {
-          var toLaundryBtn = document.createElement('button');
-          toLaundryBtn.type = 'button';
-          toLaundryBtn.className = 'w-full py-3 rounded-2xl bg-sky-600 text-white text-sm font-semibold active:scale-98 transition';
-          toLaundryBtn.textContent = 'Enviar a la rentadora';
-          toLaundryBtn.addEventListener('click', function () {
-            item.dirty = true;
-            putItem(item).then(function () {
-              document.getElementById('itemActionModal').classList.add('hidden');
-              renderClosetModal();
-              renderAll();
-              showLaundryToast();
-            });
-          });
-          container.appendChild(toLaundryBtn);
-        } else {
-          var markCleanBtn = document.createElement('button');
-          markCleanBtn.type = 'button';
-          markCleanBtn.className = 'w-full py-3 rounded-2xl bg-sky-600 text-white text-sm font-semibold active:scale-98 transition';
-          markCleanBtn.textContent = 'Treure de la rentadora (Neta)';
-          markCleanBtn.addEventListener('click', function () {
-            item.dirty = false;
-            putItem(item).then(function () {
-              document.getElementById('itemActionModal').classList.add('hidden');
-              renderClosetModal();
-              renderAll();
-            });
-          });
-          container.appendChild(markCleanBtn);
-        }
-
-        var deleteBtn = document.createElement('button');
-        deleteBtn.type = 'button';
-        deleteBtn.className = 'w-full py-3 rounded-2xl bg-rose-500 text-white text-sm font-semibold active:scale-98 transition';
-        deleteBtn.textContent = "Eliminar de l'armari";
-        deleteBtn.addEventListener('click', function () {
-          deleteItemFromDB(item.id).then(function () {
-            wardrobe = wardrobe.filter(function (w) { return w.id !== item.id; });
-            document.getElementById('itemActionModal').classList.add('hidden');
-            renderClosetModal();
-            renderAll();
-          });
-        });
-        container.appendChild(deleteBtn);
+      var dotsEl = document.getElementById('carouselDots');
+      if (total <= 1) {
+        dotsEl.innerHTML = '';
+      } else {
+        dotsEl.innerHTML = carouselItems.map(function (_, idx) {
+          var active = idx === carouselIndex;
+          return '<span class="h-1.5 rounded-full transition-all ' + (active ? 'w-4 bg-slate-900' : 'w-1.5 bg-slate-300') + '"></span>';
+        }).join('');
       }
-
-      document.getElementById('itemActionModal').classList.remove('hidden');
     }
 
-    document.getElementById('closeItemActionBtn').addEventListener('click', function () {
-      document.getElementById('itemActionModal').classList.add('hidden');
+    function openCarousel(items) {
+      if (!items || !items.length) return;
+      carouselItems = items;
+      carouselIndex = 0;
+      renderCarousel();
+      document.getElementById('carouselModal').classList.remove('hidden');
+    }
+
+    document.getElementById('closeCarouselBtn').addEventListener('click', function () {
+      document.getElementById('carouselModal').classList.add('hidden');
+    });
+    document.getElementById('carouselPrevBtn').addEventListener('click', function () {
+      carouselIndex = (carouselIndex - 1 + carouselItems.length) % carouselItems.length;
+      renderCarousel();
+    });
+    document.getElementById('carouselNextBtn').addEventListener('click', function () {
+      carouselIndex = (carouselIndex + 1) % carouselItems.length;
+      renderCarousel();
     });
 
-    // --- RENTADORA ---
-    function exitLaundryMultiMode() {
-      laundryMultiMode = false;
-      laundrySelectedIds = [];
-      renderLaundryModal();
-    }
+    // Lliscar al carrusel
+    (function () {
+      var stage = document.getElementById('carouselStage');
+      var sx = 0, dx = 0, down = false;
+      stage.addEventListener('pointerdown', function (e) {
+        if (e.target.tagName === 'BUTTON') return;
+        sx = e.clientX; dx = 0; down = true;
+      });
+      stage.addEventListener('pointermove', function (e) {
+        if (!down) return;
+        dx = e.clientX - sx;
+      });
+      stage.addEventListener('pointerup', function () {
+        if (!down) return;
+        down = false;
+        if (carouselItems.length <= 1) return;
+        if (dx < -45) {
+          carouselIndex = (carouselIndex + 1) % carouselItems.length;
+          renderCarousel();
+        } else if (dx > 45) {
+          carouselIndex = (carouselIndex - 1 + carouselItems.length) % carouselItems.length;
+          renderCarousel();
+        }
+      });
+      stage.addEventListener('pointercancel', function () { down = false; });
+    })();
 
+    // --- RENTADORA (selecció amb 1 clic) ---
     function toggleLaundrySelection(id) {
       var idx = laundrySelectedIds.indexOf(id);
       if (idx !== -1) laundrySelectedIds.splice(idx, 1);
       else laundrySelectedIds.push(id);
-      if (laundrySelectedIds.length === 0) {
-        exitLaundryMultiMode();
-      } else {
-        renderLaundryModal();
-      }
+      renderLaundryModal();
     }
 
     function renderLaundryModal() {
       var dirty = wardrobe.filter(function (i) { return !i.isStarter && i.dirty; });
+      laundrySelectedIds = laundrySelectedIds.filter(function (id) {
+        return dirty.some(function (d) { return d.id === id; });
+      });
+
+      var hasSelection = laundrySelectedIds.length > 0;
       var grid = document.getElementById('laundryGrid');
       var titleEl = document.getElementById('laundryTitle');
       var cancelBtn = document.getElementById('cancelLaundrySelectBtn');
       var closeBtn = document.getElementById('closeLaundryBtn');
       var normalFooter = document.getElementById('laundryNormalFooter');
       var multiFooter = document.getElementById('laundryMultiFooter');
-      var washSelBtn = document.getElementById('washSelectedBtn');
 
-      if (laundryMultiMode) {
+      if (hasSelection) {
         titleEl.textContent = laundrySelectedIds.length + ' seleccionades';
         cancelBtn.classList.remove('hidden');
         closeBtn.classList.add('hidden');
         normalFooter.classList.add('hidden');
         multiFooter.classList.remove('hidden');
-        washSelBtn.disabled = laundrySelectedIds.length === 0;
       } else {
         titleEl.textContent = 'Rentadora';
         cancelBtn.classList.add('hidden');
@@ -934,57 +902,49 @@
       }
 
       grid.innerHTML = dirty.length ? dirty.map(function (i) {
-        var isSelected = laundryMultiMode && laundrySelectedIds.indexOf(i.id) !== -1;
+        var isSelected = laundrySelectedIds.indexOf(i.id) !== -1;
         var ringClass = isSelected ? 'ring-2 ring-sky-600 bg-sky-50' : 'bg-slate-100';
-        var checkBadge = laundryMultiMode
-          ? '<span class="absolute top-1.5 right-1.5 w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold ' + (isSelected ? 'bg-sky-600 text-white' : 'bg-white/90 border border-slate-300 text-transparent') + '">&#10003;</span>'
+        var checkBadge = isSelected
+          ? '<span class="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-sky-600 text-white flex items-center justify-center text-[11px] font-bold">&#10003;</span>'
           : '';
-        return '<button type="button" data-id="' + i.id + '" class="laundry-item-btn aspect-square rounded-2xl ' + ringClass + ' p-2 flex items-center justify-center relative transition"><img src="' + i.image + '" class="w-full h-full object-contain pointer-events-none"/>' + checkBadge + '</button>';
+        return '<button type="button" data-id="' + i.id + '" class="laundry-item-btn aspect-square rounded-2xl ' + ringClass + ' p-2 flex items-center justify-center relative active:scale-95 transition"><img src="' + i.image + '" class="w-full h-full object-contain pointer-events-none"/>' + checkBadge + '</button>';
       }).join('') : '<div class="col-span-3 text-center text-xs text-slate-400 py-10">La rentadora és buida</div>';
 
       grid.querySelectorAll('.laundry-item-btn').forEach(function (b) {
-        var itemId = b.dataset.id;
-        bindTapAndHold(
-          b,
-          function () {
-            if (laundryMultiMode) {
-              toggleLaundrySelection(itemId);
-            } else {
-              var found = wardrobe.find(function (w) { return w.id === itemId; });
-              if (found) openItemActionSheet(found, 'laundry');
-            }
-          },
-          function () {
-            if (!laundryMultiMode) {
-              laundryMultiMode = true;
-              laundrySelectedIds = [itemId];
-              renderLaundryModal();
-            } else {
-              toggleLaundrySelection(itemId);
-            }
-          }
-        );
+        b.addEventListener('click', function () {
+          toggleLaundrySelection(b.dataset.id);
+        });
       });
     }
 
-    document.getElementById('cancelLaundrySelectBtn').addEventListener('click', exitLaundryMultiMode);
+    document.getElementById('cancelLaundrySelectBtn').addEventListener('click', function () {
+      laundrySelectedIds = [];
+      renderLaundryModal();
+    });
+
+    document.getElementById('laundryViewSelectedBtn').addEventListener('click', function () {
+      var selectedItems = laundrySelectedIds.map(function (id) {
+        return wardrobe.find(function (w) { return w.id === id; });
+      }).filter(Boolean);
+      openCarousel(selectedItems);
+    });
 
     document.getElementById('washSelectedBtn').addEventListener('click', function () {
       var targets = wardrobe.filter(function (i) { return laundrySelectedIds.indexOf(i.id) !== -1; });
       Promise.all(targets.map(function (i) { i.dirty = false; return putItem(i); })).then(function () {
-        exitLaundryMultiMode();
+        laundrySelectedIds = [];
+        renderLaundryModal();
         renderAll();
+        showToast('Roba neta');
       });
     });
 
     document.getElementById('laundryBtn').addEventListener('click', function () {
-      laundryMultiMode = false;
       laundrySelectedIds = [];
       renderLaundryModal();
       document.getElementById('laundryModal').classList.remove('hidden');
     });
     document.getElementById('closeLaundryBtn').addEventListener('click', function () {
-      laundryMultiMode = false;
       laundrySelectedIds = [];
       document.getElementById('laundryModal').classList.add('hidden');
     });
@@ -994,41 +954,44 @@
       });
     });
 
-    // --- ARMARI ---
-    function exitClosetMultiMode() {
-      closetMultiMode = false;
-      closetSelectedIds = [];
-      renderClosetModal();
-    }
-
+    // --- ARMARI (selecció amb 1 clic + lògica rentadora intel·ligent) ---
     function toggleClosetSelection(id) {
       var idx = closetSelectedIds.indexOf(id);
       if (idx !== -1) closetSelectedIds.splice(idx, 1);
       else closetSelectedIds.push(id);
-      if (closetSelectedIds.length === 0) {
-        exitClosetMultiMode();
-      } else {
-        renderClosetModal();
-      }
+      renderClosetModal();
     }
 
     function renderClosetModal() {
       var real = wardrobe.filter(function (i) { return !i.isStarter; });
+      closetSelectedIds = closetSelectedIds.filter(function (id) {
+        return real.some(function (r) { return r.id === id; });
+      });
+
+      var selectedItems = closetSelectedIds.map(function (id) {
+        return real.find(function (r) { return r.id === id; });
+      }).filter(Boolean);
+
+      var hasSelection = selectedItems.length > 0;
       var grid = document.getElementById('closetGrid');
       var titleEl = document.getElementById('closetTitle');
       var addBtn = document.getElementById('addInsideClosetBtn');
       var cancelBtn = document.getElementById('cancelClosetSelectBtn');
       var closeBtn = document.getElementById('closeClosetBtn');
       var multiFooter = document.getElementById('closetMultiFooter');
+      var toggleLaundryBtn = document.getElementById('closetToggleLaundryBtn');
 
-      if (closetMultiMode) {
-        titleEl.textContent = closetSelectedIds.length + ' seleccionades';
+      if (hasSelection) {
+        titleEl.textContent = selectedItems.length + ' seleccionades';
         addBtn.classList.add('hidden');
         closeBtn.classList.add('hidden');
         cancelBtn.classList.remove('hidden');
         multiFooter.classList.remove('hidden');
-        document.getElementById('closetSendSelectedLaundryBtn').disabled = closetSelectedIds.length === 0;
-        document.getElementById('closetDeleteSelectedBtn').disabled = closetSelectedIds.length === 0;
+
+        // Si TOTES les seleccionades ja són a la rentadora -> Treure de la rentadora
+        // Si n'hi ha alguna que NO hi és -> A la rentadora (totes)
+        var allDirty = selectedItems.every(function (i) { return i.dirty; });
+        toggleLaundryBtn.textContent = allDirty ? 'Treure rentadora' : 'A la rentadora';
       } else {
         titleEl.textContent = 'Armari';
         addBtn.classList.remove('hidden');
@@ -1038,48 +1001,48 @@
       }
 
       grid.innerHTML = real.length ? real.map(function (i) {
-        var isSelected = closetMultiMode && closetSelectedIds.indexOf(i.id) !== -1;
+        var isSelected = closetSelectedIds.indexOf(i.id) !== -1;
         var ringClass = isSelected ? 'ring-2 ring-sky-600 bg-sky-50' : 'bg-slate-100';
-        var dirtyDot = (!closetMultiMode && i.dirty) ? '<span class="absolute bottom-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-sky-500"></span>' : '';
-        var checkBadge = closetMultiMode
-          ? '<span class="absolute top-1.5 right-1.5 w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold ' + (isSelected ? 'bg-sky-600 text-white' : 'bg-white/90 border border-slate-300 text-transparent') + '">&#10003;</span>'
+        var dirtyDot = i.dirty ? '<span class="absolute bottom-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-sky-500"></span>' : '';
+        var checkBadge = isSelected
+          ? '<span class="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-sky-600 text-white flex items-center justify-center text-[11px] font-bold">&#10003;</span>'
           : '';
-        return '<button type="button" data-id="' + i.id + '" class="closet-item-btn aspect-square rounded-2xl ' + ringClass + ' p-2 flex items-center justify-center relative transition"><img src="' + i.image + '" class="w-full h-full object-contain pointer-events-none"/>' + dirtyDot + checkBadge + '</button>';
+        return '<button type="button" data-id="' + i.id + '" class="closet-item-btn aspect-square rounded-2xl ' + ringClass + ' p-2 flex items-center justify-center relative active:scale-95 transition"><img src="' + i.image + '" class="w-full h-full object-contain pointer-events-none"/>' + dirtyDot + checkBadge + '</button>';
       }).join('') : '<div class="col-span-3 text-center text-xs text-slate-400 py-10">Encara no hi ha roba a l\'armari</div>';
 
       grid.querySelectorAll('.closet-item-btn').forEach(function (b) {
-        var itemId = b.dataset.id;
-        bindTapAndHold(
-          b,
-          function () {
-            if (closetMultiMode) {
-              toggleClosetSelection(itemId);
-            } else {
-              var found = wardrobe.find(function (w) { return w.id === itemId; });
-              if (found) openItemActionSheet(found, 'closet');
-            }
-          },
-          function () {
-            if (!closetMultiMode) {
-              closetMultiMode = true;
-              closetSelectedIds = [itemId];
-              renderClosetModal();
-            } else {
-              toggleClosetSelection(itemId);
-            }
-          }
-        );
+        b.addEventListener('click', function () {
+          toggleClosetSelection(b.dataset.id);
+        });
       });
     }
 
-    document.getElementById('cancelClosetSelectBtn').addEventListener('click', exitClosetMultiMode);
+    document.getElementById('cancelClosetSelectBtn').addEventListener('click', function () {
+      closetSelectedIds = [];
+      renderClosetModal();
+    });
 
-    document.getElementById('closetSendSelectedLaundryBtn').addEventListener('click', function () {
+    document.getElementById('closetViewSelectedBtn').addEventListener('click', function () {
+      var selectedItems = closetSelectedIds.map(function (id) {
+        return wardrobe.find(function (w) { return w.id === id; });
+      }).filter(Boolean);
+      openCarousel(selectedItems);
+    });
+
+    document.getElementById('closetToggleLaundryBtn').addEventListener('click', function () {
       var targets = wardrobe.filter(function (i) { return closetSelectedIds.indexOf(i.id) !== -1; });
-      Promise.all(targets.map(function (i) { i.dirty = true; return putItem(i); })).then(function () {
-        exitClosetMultiMode();
+      if (!targets.length) return;
+      var allDirty = targets.every(function (i) { return i.dirty; });
+      var nextDirtyState = !allDirty;
+
+      Promise.all(targets.map(function (i) {
+        i.dirty = nextDirtyState;
+        return putItem(i);
+      })).then(function () {
+        closetSelectedIds = [];
+        renderClosetModal();
         renderAll();
-        showLaundryToast();
+        showToast(nextDirtyState ? 'Enviat a la rentadora' : 'Tret de la rentadora');
       });
     });
 
@@ -1087,19 +1050,18 @@
       var idsToRemove = closetSelectedIds.slice();
       Promise.all(idsToRemove.map(function (id) { return deleteItemFromDB(id); })).then(function () {
         wardrobe = wardrobe.filter(function (w) { return idsToRemove.indexOf(w.id) === -1; });
-        exitClosetMultiMode();
+        closetSelectedIds = [];
+        renderClosetModal();
         renderAll();
       });
     });
 
     document.getElementById('closetBtn').addEventListener('click', function () {
-      closetMultiMode = false;
       closetSelectedIds = [];
       renderClosetModal();
       document.getElementById('closetModal').classList.remove('hidden');
     });
     document.getElementById('closeClosetBtn').addEventListener('click', function () {
-      closetMultiMode = false;
       closetSelectedIds = [];
       document.getElementById('closetModal').classList.add('hidden');
     });
