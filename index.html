@@ -106,11 +106,12 @@
     html, body { margin: 0; padding: 0; height: 100dvh; width: 100vw; overflow: hidden; background: #F5F5F7; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif; color: #1D1D1F; }
     .safe-top { padding-top: max(12px, env(safe-area-inset-top)); }
     .safe-bottom { padding-bottom: max(16px, env(safe-area-inset-bottom)); }
-    .outfit-slot { display: flex; align-items: center; justify-content: center; position: relative; touch-action: pan-y; min-width: 140px; }
+    .outfit-slot { display: flex; align-items: center; justify-content: center; position: relative; touch-action: none; min-width: 140px; }
     .cutout-img { width: auto; display: block; object-fit: contain; filter: drop-shadow(0 8px 14px rgba(0,0,0,0.13)); pointer-events: none; transition: transform 0.25s cubic-bezier(0.22,1,0.36,1); }
     .cutout-top { height: 26dvh; max-height: 26dvh; max-width: 64vw; }
     .cutout-pants { height: 35dvh; max-height: 35dvh; max-width: 58vw; }
     .cutout-shoes { height: 11.5dvh; max-height: 11.5dvh; max-width: 46vw; }
+    .cutout-onesie { height: 72dvh; max-height: 72dvh; max-width: 84vw; }
     .checkerboard { background-image: linear-gradient(45deg,#e5e7eb 25%,transparent 25%),linear-gradient(-45deg,#e5e7eb 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#e5e7eb 75%),linear-gradient(-45deg,transparent 75%,#e5e7eb 75%); background-size: 20px 20px; background-position: 0 0,0 10px,10px -10px,-10px 0; }
     .bg-range { -webkit-appearance: none; appearance: none; width: 100%; min-width: 0; height: 28px; background: transparent; cursor: pointer; display: block; }
     .bg-range::-webkit-slider-runnable-track { width: 100%; height: 6px; border-radius: 999px; background: #CBD5E1; }
@@ -216,12 +217,17 @@
 
   <input type="file" id="fileInput" accept="image/*" multiple class="hidden" />
 
-  <!-- Peces de roba tocant-se i proporcionades -->
+  <!-- Peces de roba tocant-se i proporcionades + Easter egg 1% -->
   <main class="flex-1 flex flex-col items-center justify-center px-4 overflow-hidden relative">
     <div id="outfitStack" class="flex flex-col items-center justify-center w-full">
       <div id="slot-top" data-category="top" class="outfit-slot z-30"><div class="slot-content flex items-center justify-center"></div></div>
       <div id="slot-pants" data-category="pants" class="outfit-slot z-20 -mt-2"><div class="slot-content flex items-center justify-center"></div></div>
       <div id="slot-shoes" data-category="shoes" class="outfit-slot z-10 -mt-1.5"><div class="slot-content flex items-center justify-center"></div></div>
+    </div>
+
+    <!-- Conjunt sencer sorpresa (1% de probabilitat) -->
+    <div id="easterEggSlot" class="hidden flex-1 w-full flex items-center justify-center cursor-pointer">
+      <img src="./duck-onesie.png" alt="" class="cutout-img cutout-onesie" />
     </div>
 
     <!-- Avís inferior -->
@@ -444,7 +450,6 @@
       navigator.storage.persist().catch(function () {});
     }
 
-    // Proporcions harmonitzades perquè samarreta, pantalons i sabates quedin proporcionats
     function makeStarterSVG(category, color) {
       var svg = '';
       if (category === 'top') {
@@ -469,6 +474,7 @@
     var currentFormality = 'casual';
     var currentIndices = { top: 0, pants: 0, shoes: 0 };
     var lockedSlots = { top: false, pants: false, shoes: false };
+    var duckEasterEggActive = false;
 
     var taggingQueue = [];
     var queueIndex = 0;
@@ -885,18 +891,29 @@
         btn.classList.toggle('text-slate-500', !active);
       });
 
-      ['top', 'pants', 'shoes'].forEach(function (cat) {
-        var box = document.getElementById('slot-' + cat).querySelector('.slot-content');
-        var list = getCleanItemsFor(cat);
-        if (list.length === 0) {
-          lockedSlots[cat] = false;
-          box.innerHTML = '<div class="w-28 h-28 my-1 px-3 rounded-full border-2 border-dashed border-slate-300 flex items-center justify-center text-center text-slate-400 text-xs font-medium leading-tight">' + EMPTY_LABELS[cat] + '</div>';
-          return;
-        }
-        if (currentIndices[cat] >= list.length) currentIndices[cat] = 0;
-        var lockBadge = lockedSlots[cat] ? LOCK_ICON_HTML : '';
-        box.innerHTML = '<div class="relative inline-flex items-center justify-center"><img src="' + list[currentIndices[cat]].image + '" alt="" class="cutout-img cutout-' + cat + '" />' + lockBadge + '</div>';
-      });
+      var stackEl = document.getElementById('outfitStack');
+      var eggEl = document.getElementById('easterEggSlot');
+
+      if (duckEasterEggActive) {
+        stackEl.classList.add('hidden');
+        eggEl.classList.remove('hidden');
+      } else {
+        eggEl.classList.add('hidden');
+        stackEl.classList.remove('hidden');
+
+        ['top', 'pants', 'shoes'].forEach(function (cat) {
+          var box = document.getElementById('slot-' + cat).querySelector('.slot-content');
+          var list = getCleanItemsFor(cat);
+          if (list.length === 0) {
+            lockedSlots[cat] = false;
+            box.innerHTML = '<div class="w-28 h-28 my-1 px-3 rounded-full border-2 border-dashed border-slate-300 flex items-center justify-center text-center text-slate-400 text-xs font-medium leading-tight">' + EMPTY_LABELS[cat] + '</div>';
+            return;
+          }
+          if (currentIndices[cat] >= list.length) currentIndices[cat] = 0;
+          var lockBadge = lockedSlots[cat] ? LOCK_ICON_HTML : '';
+          box.innerHTML = '<div class="relative inline-flex items-center justify-center"><img src="' + list[currentIndices[cat]].image + '" alt="" class="cutout-img cutout-' + cat + '" />' + lockBadge + '</div>';
+        });
+      }
 
       var dirtyCount = wardrobe.filter(function (i) { return !i.isStarter && i.dirty; }).length;
       var badge = document.getElementById('laundryBadge');
@@ -906,20 +923,32 @@
 
     function nextItem(cat) {
       if (lockedSlots[cat]) {
-        showToast('Bloquejat · Llisca a la dreta per desbloquejar');
+        showToast('Bloquejat · Llisca a l\'esquerra per desbloquejar');
         return;
       }
       var list = getCleanItemsFor(cat);
       if (list.length <= 1) return;
+
+      if (Math.random() < 0.01) {
+        duckEasterEggActive = true;
+        renderAll();
+        return;
+      }
+
+      duckEasterEggActive = false;
       currentIndices[cat] = (currentIndices[cat] + 1) % list.length;
       renderAll();
     }
 
-    function toggleSlotLock(cat) {
+    function setSlotLock(cat, shouldLock) {
       var list = getCleanItemsFor(cat);
       if (!list.length) return;
-      lockedSlots[cat] = !lockedSlots[cat];
-      showToast(lockedSlots[cat] ? 'Peça bloquejada' : 'Peça desbloquejada');
+      if (lockedSlots[cat] === shouldLock) {
+        showToast(shouldLock ? 'Ja està bloquejada' : 'Ja està desbloquejada');
+        return;
+      }
+      lockedSlots[cat] = shouldLock;
+      showToast(shouldLock ? 'Peça bloquejada' : 'Peça desbloquejada');
       renderAll();
     }
 
@@ -935,26 +964,55 @@
 
     function attachSwipe(cat) {
       var el = document.getElementById('slot-' + cat);
-      var sx = 0, dx = 0, down = false;
-      el.addEventListener('pointerdown', function (e) { sx = e.clientX; dx = 0; down = true; el.setPointerCapture(e.pointerId); });
+      var sx = 0, sy = 0, dx = 0, dy = 0, down = false;
+      el.addEventListener('pointerdown', function (e) {
+        sx = e.clientX;
+        sy = e.clientY;
+        dx = 0;
+        dy = 0;
+        down = true;
+        el.setPointerCapture(e.pointerId);
+      });
       el.addEventListener('pointermove', function (e) {
         if (!down) return;
         dx = e.clientX - sx;
+        dy = e.clientY - sy;
         var img = el.querySelector('.cutout-img');
-        if (img) { img.style.transition = 'none'; img.style.transform = 'translateX(' + dx + 'px) rotate(' + (dx * 0.05) + 'deg)'; }
+        if (!img) return;
+        img.style.transition = 'none';
+        if (dy < 0 && Math.abs(dy) > Math.abs(dx)) {
+          var scale = Math.max(0.85, 1 + dy * 0.0008);
+          img.style.transform = 'translateY(' + dy + 'px) scale(' + scale + ')';
+        } else {
+          img.style.transform = 'translateX(' + dx + 'px) rotate(' + (dx * 0.05) + 'deg)';
+        }
       });
       function finish() {
         if (!down) return;
         down = false;
         var img = el.querySelector('.cutout-img');
-        if (img) { img.style.transition = 'transform 0.25s ease'; img.style.transform = 'translateX(0) rotate(0)'; }
-        if (Math.abs(dx) < 10) nextItem(cat);
-        else if (dx > 55) toggleSlotLock(cat);
-        else if (dx < -55) sendToLaundry(cat);
+        if (img) {
+          img.style.transition = 'transform 0.25s ease';
+          img.style.transform = 'translate(0, 0) rotate(0) scale(1)';
+        }
+        if (Math.abs(dx) < 12 && Math.abs(dy) < 12) {
+          nextItem(cat);
+        } else if (dy < -55 && Math.abs(dy) > Math.abs(dx)) {
+          sendToLaundry(cat);
+        } else if (dx > 50 && Math.abs(dx) >= Math.abs(dy)) {
+          setSlotLock(cat, true);
+        } else if (dx < -50 && Math.abs(dx) >= Math.abs(dy)) {
+          setSlotLock(cat, false);
+        }
       }
       el.addEventListener('pointerup', finish);
       el.addEventListener('pointercancel', finish);
     }
+
+    document.getElementById('easterEggSlot').addEventListener('click', function () {
+      duckEasterEggActive = false;
+      renderAll();
+    });
 
     function updateEditorToolUI() {
       var eraseBtn = document.getElementById('toolEraseBtn');
@@ -1165,6 +1223,7 @@
         currentFormality = btn.dataset.pick;
         currentIndices = { top: 0, pants: 0, shoes: 0 };
         lockedSlots = { top: false, pants: false, shoes: false };
+        duckEasterEggActive = false;
         randomizeIndices();
         renderAll();
         var overlay = document.getElementById('welcomeOverlay');
@@ -1178,17 +1237,32 @@
         currentFormality = b.dataset.formality;
         currentIndices = { top: 0, pants: 0, shoes: 0 };
         lockedSlots = { top: false, pants: false, shoes: false };
+        duckEasterEggActive = false;
         renderAll();
       });
     });
     ['top', 'pants', 'shoes'].forEach(attachSwipe);
 
     document.getElementById('shuffleBtn').addEventListener('click', function () {
+      if (duckEasterEggActive) {
+        duckEasterEggActive = false;
+        renderAll();
+        return;
+      }
+
+      var changedAny = false;
       ['top', 'pants', 'shoes'].forEach(function (cat) {
         if (lockedSlots[cat]) return;
         var list = getCleanItemsFor(cat);
-        if (list.length > 1) currentIndices[cat] = (currentIndices[cat] + 1 + Math.floor(Math.random() * (list.length - 1))) % list.length;
+        if (list.length > 1) {
+          currentIndices[cat] = (currentIndices[cat] + 1 + Math.floor(Math.random() * (list.length - 1))) % list.length;
+          changedAny = true;
+        }
       });
+
+      if (changedAny && Math.random() < 0.01) {
+        duckEasterEggActive = true;
+      }
       renderAll();
     });
 
