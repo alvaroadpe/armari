@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Closet" />
+  <meta name="theme-color" content="#F5F5F7" />
+  <title>Closet</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * { -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; height: 100dvh; width: 100vw; overflow: hidden; background: #F5F5F7; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif; color: #1D1D1F; }
+    .safe-top { padding-top: max(12px, env(safe-area-inset-top)); }
+    .safe-bottom { padding-bottom: max(14px, env(safe-area-inset-bottom)); }
+    .cutout-box { width: min(44vw, 22dvh, 185px); height: min(44vw, 22dvh, 185px); display: flex; align-items: center; justify-content: center; position: relative; touch-action: pan-y; }
+    .cutout-img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 10px 18px rgba(0,0,0,0.14)); pointer-events: none; transition: transform 0.25s cubic-bezier(0.22,1,0.36,1); }
+    .checkerboard { background-image: linear-gradient(45deg,#e5e7eb 25%,transparent 25%),linear-gradient(-45deg,#e5e7eb 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#e5e7eb 75%),linear-gradient(-45deg,transparent 75%,#e5e7eb 75%); background-size: 20px 20px; background-position: 0 0,0 10px,10px -10px,-10px 0; }
+  </style>
+</head>
+<body class="flex flex-col justify-between h-[100dvh] w-screen overflow-hidden">
+
+  <header class="safe-top px-4 pb-2 flex items-center justify-between gap-2 z-10">
+    <div id="formalityBar" class="flex bg-black/5 p-1 rounded-full flex-1 max-w-[270px]">
+      <button type="button" data-formality="casual" class="formality-btn flex-1 py-1.5 text-xs font-semibold rounded-full transition-all">Casual</button>
+      <button type="button" data-formality="semiformal" class="formality-btn flex-1 py-1.5 text-xs font-semibold rounded-full transition-all">Semiformal</button>
+      <button type="button" data-formality="formal" class="formality-btn flex-1 py-1.5 text-xs font-semibold rounded-full transition-all">Formal</button>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <button type="button" id="laundryBtn" aria-label="Laundry" class="relative w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center active:scale-95 transition">
+        <svg class="w-5 h-5 text-slate-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="2" width="18" height="20" rx="3"/><line x1="3" y1="7" x2="21" y2="7"/><circle cx="7" cy="4.5" r="0.8" fill="currentColor"/><circle cx="10" cy="4.5" r="0.8" fill="currentColor"/><circle cx="12" cy="14" r="4.5"/><path d="M9.5 14c1.2-1 2.3-1 3.5 0s2.3 1 3.5 0"/>
+        </svg>
+        <span id="laundryBadge" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center">0</span>
+      </button>
+
+      <button type="button" id="closetBtn" aria-label="Closet" class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center active:scale-95 transition">
+        <svg class="w-5 h-5 text-slate-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.47a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.47a2 2 0 00-1.34-2.23z"/>
+        </svg>
+      </button>
+
+      <button type="button" id="addBtn" class="h-10 px-3.5 rounded-full bg-slate-900 text-white text-xs font-semibold shadow-sm flex items-center gap-1 active:scale-95 transition">
+        <span class="text-base leading-none">+</span> Add
+      </button>
+    </div>
+  </header>
+
+  <input type="file" id="fileInput" accept="image/*" multiple class="hidden" />
+
+  <main class="flex-1 grid grid-rows-3 place-items-center px-6 py-1 relative">
+    <div id="slot-top" data-category="top" class="cutout-box"><div class="slot-content w-full h-full flex items-center justify-center"></div></div>
+    <div id="slot-pants" data-category="pants" class="cutout-box"><div class="slot-content w-full h-full flex items-center justify-center"></div></div>
+    <div id="slot-shoes" data-category="shoes" class="cutout-box"><div class="slot-content w-full h-full flex items-center justify-center"></div></div>
+    <div id="toastMsg" class="pointer-events-none opacity-0 transition-opacity duration-300 fixed top-20 left-1/2 -translate-x-1/2 bg-slate-900/85 text-white text-xs font-medium px-3.5 py-1.5 rounded-full shadow-lg z-40"></div>
+  </main>
+
+  <footer class="safe-bottom px-6 pt-2 flex flex-col items-center gap-1.5 z-10">
+    <button type="button" id="shuffleBtn" class="w-full max-w-xs py-3 rounded-full bg-white text-slate-900 font-semibold text-sm shadow-sm border border-black/5 active:scale-95 transition flex items-center justify-center gap-2">
+      Shuffle Outfit
+    </button>
+    <p class="text-[11px] text-slate-400">Swipe right to swap &bull; Swipe left to wash</p>
+  </footer>
+
+  <!-- Tagging Modal -->
+  <div id="taggingModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-3">
+    <div class="bg-white w-full max-w-md rounded-3xl p-5 shadow-2xl flex flex-col gap-4 max-h-[92dvh] overflow-y-auto">
+      <div class="flex items-center justify-between">
+        <span id="tagProgressText" class="text-xs font-bold uppercase tracking-wider text-slate-400">Photo 1 of 1</span>
+        <div class="flex items-center gap-3">
+          <button type="button" id="skipPhotoBtn" class="text-xs font-semibold text-slate-500">Skip</button>
+          <button type="button" id="cancelQueueBtn" class="text-xs font-semibold text-rose-500">Cancel All</button>
+        </div>
+      </div>
+
+      <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+        <div id="tagProgressBar" class="h-full bg-slate-900 transition-all duration-300" style="width:100%"></div>
+      </div>
+
+      <div class="relative w-full h-52 rounded-2xl checkerboard flex items-center justify-center overflow-hidden border border-slate-200">
+        <img id="tagPreviewImg" src="" alt="" class="w-44 h-44 object-contain drop-shadow-md" />
+        <div id="bgRemoveBadge" class="hidden absolute bottom-2 right-2 bg-slate-900/80 text-white text-[11px] px-2.5 py-1 rounded-full">Removing background...</div>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label class="text-xs font-bold text-slate-700">What item of clothing is it?</label>
+        <div class="grid grid-cols-3 gap-2">
+          <button type="button" data-cat="top" class="tag-cat-btn py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700">Top</button>
+          <button type="button" data-cat="pants" class="tag-cat-btn py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700">Pants</button>
+          <button type="button" data-cat="shoes" class="tag-cat-btn py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700">Shoes</button>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label class="text-xs font-bold text-slate-700">How formal?</label>
+        <div class="grid grid-cols-3 gap-2">
+          <button type="button" data-form="casual" class="tag-form-btn py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700">Casual</button>
+          <button type="button" data-form="semiformal" class="tag-form-btn py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700">Semiformal</button>
+          <button type="button" data-form="formal" class="tag-form-btn py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700">Formal</button>
+        </div>
+      </div>
+
+      <button type="button" id="saveTagBtn" disabled class="w-full py-3.5 rounded-2xl bg-slate-900 text-white text-sm font-semibold disabled:opacity-35">Save &amp; Next</button>
+    </div>
+  </div>
+
+  <!-- Washing Machine Modal -->
+  <div id="laundryModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-3">
+    <div class="bg-white w-full max-w-md rounded-3xl p-5 shadow-2xl flex flex-col gap-4 max-h-[85dvh]">
+      <div class="flex items-center justify-between">
+        <h2 class="text-base font-bold text-slate-900">Washing Machine</h2>
+        <button type="button" id="closeLaundryBtn" class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 font-bold">&times;</button>
+      </div>
+      <div id="laundryGrid" class="flex-1 overflow-y-auto grid grid-cols-3 gap-3 min-h-[120px] p-1"></div>
+      <button type="button" id="washAllBtn" class="w-full py-3.5 rounded-2xl bg-sky-600 text-white text-sm font-semibold disabled:opacity-40">Wash All (Do Laundry)</button>
+    </div>
+  </div>
+
+  <!-- Closet Modal -->
+  <div id="closetModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-3">
+    <div class="bg-white w-full max-w-md rounded-3xl p-5 shadow-2xl flex flex-col gap-4 max-h-[85dvh]">
+      <div class="flex items-center justify-between">
+        <h2 class="text-base font-bold text-slate-900">Saved Clothes</h2>
+        <button type="button" id="closeClosetBtn" class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 font-bold">&times;</button>
+      </div>
+      <div id="closetGrid" class="flex-1 overflow-y-auto grid grid-cols-3 gap-3 min-h-[140px] p-1"></div>
+    </div>
+  </div>
+
+  <script>
+    var DB_NAME = 'ClosetWardrobeDB';
+    var STORE_NAME = 'clothes';
+    var db = null;
+
+    function openDB() {
+      return new Promise(function (resolve, reject) {
+        if (!window.indexedDB) return reject(new Error('No IndexedDB'));
+        var req = indexedDB.open(DB_NAME, 1);
+        req.onupgradeneeded = function (e) {
+          var d = e.target.result;
+          if (!d.objectStoreNames.contains(STORE_NAME)) d.createObjectStore(STORE_NAME, { keyPath: 'id' });
+        };
+        req.onsuccess = function (e) { db = e.target.result; resolve(db); };
+        req.onerror = function (e) { reject(e.target.error); };
+      });
+    }
+
+    function getAllItems() {
+      return openDB().then(function () {
+        return new Promise(function (resolve, reject) {
+          var req = db.transaction(STORE_NAME, 'readonly').objectStore(STORE_NAME).getAll();
+          req.onsuccess = function () { resolve(req.result || []); };
+          req.onerror = function () { reject(req.error); };
+        });
+      });
+    }
+
+    function putItem(item) {
+      return openDB().then(function () {
+        return new Promise(function (resolve, reject) {
+          var tx = db.transaction(STORE_NAME, 'readwrite');
+          tx.objectStore(STORE_NAME).put(item);
+          tx.oncomplete = function () { resolve(); };
+          tx.onerror = function () { reject(tx.error); };
+        });
+      });
+    }
+
+    function deleteItemFromDB(id) {
+      return openDB().then(function () {
+        return new Promise(function (resolve, reject) {
+          var tx = db.transaction(STORE_NAME, 'readwrite');
+          tx.objectStore(STORE_NAME).delete(id);
+          tx.oncomplete = function () { resolve(); };
+          tx.onerror = function () { reject(tx.error); };
+        });
+      });
+    }
+
+    if (navigator.storage && navigator.storage.persist) {
+      navigator.storage.persist().catch(function () {});
+    }
+
+    function makeStarterSVG(category, color) {
+      var path = '';
+      if (category === 'top') {
+        path = '<path d="M160 110 L215 90 L280 115 L345 90 L400 110 L445 195 L390 220 L365 175 L365 440 L195 440 L195 175 L170 220 L115 195 Z" fill="' + color + '"/>';
+      } else if (category === 'pants') {
+        path = '<path d="M195 90 L365 90 L390 465 L305 465 L280 245 L255 465 L170 465 Z" fill="' + color + '"/>';
+      } else {
+        path = '<path d="M115 350 C115 295 170 275 225 275 L265 235 L315 280 C365 295 445 305 445 365 L445 400 L115 400 Z" fill="' + color + '"/>';
+      }
+      return 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="560" height="560" viewBox="0 0 560 560">' + path + '</svg>');
+    }
+
+    var STARTER_ITEMS = [
+      { id: 's-top-1', category: 'top', formalities: ['casual', 'semiformal'], image: makeStarterSVG('top', '#CBD5E1'), dirty: false, isStarter: true },
+      { id: 's-top-2', category: 'top', formalities: ['formal', 'semiformal'], image: makeStarterSVG('top', '#94A3B8'), dirty: false, isStarter: true },
+      { id: 's-pants-1', category: 'pants', formalities: ['casual', 'semiformal'], image: makeStarterSVG('pants', '#64748B'), dirty: false, isStarter: true },
+      { id: 's-pants-2', category: 'pants', formalities: ['formal'], image: makeStarterSVG('pants', '#475569'), dirty: false, isStarter: true },
+      { id: 's-shoes-1', category: 'shoes', formalities: ['casual', 'semiformal', 'formal'], image: makeStarterSVG('shoes', '#334155'), dirty: false, isStarter: true }
+    ];
+
+    var wardrobe = [];
+    var currentFormality = 'casual';
+    var currentIndices = { top: 0, pants: 0, shoes: 0 };
+    var taggingQueue = [];
+    var queueIndex = 0;
+
+    function normalizeCutoutToSquare(sourceCanvas) {
+      var w = sourceCanvas.width, h = sourceCanvas.height;
+      var imgData = sourceCanvas.getContext('2d').getImageData(0, 0, w, h).data;
+      var minX = w, minY = h, maxX = 0, maxY = 0, hasOpaque = false;
+      for (var y = 0; y < h; y++) {
+        for (var x = 0; x < w; x++) {
+          if (imgData[(y * w + x) * 4 + 3] > 20) {
+            hasOpaque = true;
+            if (x < minX) minX = x;
+            if (x > maxX) maxX = x;
+            if (y < minY) minY = y;
+            if (y > maxY) maxY = y;
+          }
+        }
+      }
+      var out = document.createElement('canvas');
+      out.width = 560; out.height = 560;
+      var octx = out.getContext('2d');
+      if (!hasOpaque) {
+        octx.drawImage(sourceCanvas, 0, 0, 560, 560);
+        return out.toDataURL('image/png');
+      }
+      var cw = Math.max(1, maxX - minX + 1), ch = Math.max(1, maxY - minY + 1);
+      var sc = Math.min(490 / cw, 490 / ch);
+      var dw = cw * sc, dh = ch * sc;
+      octx.drawImage(sourceCanvas, minX, minY, cw, ch, (560 - dw) / 2, (560 - dh) / 2, dw, dh);
+      return out.toDataURL('image/png');
+    }
+
+    function removeBgFromImg(imgEl) {
+      var sc = Math.min(1, 640 / Math.max(imgEl.width, imgEl.height));
+      var w = Math.max(1, Math.round(imgEl.width * sc));
+      var h = Math.max(1, Math.round(imgEl.height * sc));
+      var c = document.createElement('canvas');
+      c.width = w; c.height = h;
+      var ctx = c.getContext('2d');
+      ctx.drawImage(imgEl, 0, 0, w, h);
+      var idata = ctx.getImageData(0, 0, w, h);
+      var d = idata.data;
+      var corners = [0, (w - 1) * 4, ((h - 1) * w) * 4, ((h - 1) * w + (w - 1)) * 4];
+      var r = 0, g = 0, b = 0;
+      for (var k = 0; k < 4; k++) { r += d[corners[k]]; g += d[corners[k] + 1]; b += d[corners[k] + 2]; }
+      r /= 4; g /= 4; b /= 4;
+      var vis = new Uint8Array(w * h);
+      var stack = [];
+      for (var x = 0; x < w; x++) { stack.push(x); stack.push((h - 1) * w + x); }
+      for (var y = 0; y < h; y++) { stack.push(y * w); stack.push(y * w + (w - 1)); }
+      while (stack.length > 0) {
+        var pos = stack.pop();
+        if (vis[pos]) continue;
+        vis[pos] = 1;
+        var idx = pos * 4;
+        var dist = Math.sqrt(Math.pow(d[idx] - r, 2) + Math.pow(d[idx + 1] - g, 2) + Math.pow(d[idx + 2] - b, 2));
+        if (dist > 48) continue;
+        d[idx + 3] = 0;
+        var px = pos % w, py = (pos - px) / w;
+        if (px > 0) stack.push(pos - 1);
+        if (px < w - 1) stack.push(pos + 1);
+        if (py > 0) stack.push(pos - w);
+        if (py < h - 1) stack.push(pos + w);
+      }
+      ctx.putImageData(idata, 0, 0);
+      return normalizeCutoutToSquare(c);
+    }
+
+    function processFile(file) {
+      return new Promise(function (resolve) {
+        var reader = new FileReader();
+        reader.onload = function () {
+          var img = new Image();
+          img.onload = function () { resolve(removeBgFromImg(img)); };
+          img.onerror = function () { resolve(reader.result); };
+          img.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    var toastTimer = null;
+    function showToast(msg) {
+      var el = document.getElementById('toastMsg');
+      el.textContent = msg;
+      el.style.opacity = '1';
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () { el.style.opacity = '0'; }, 1600);
+    }
+
+    function getCleanItemsFor(cat) {
+      var real = wardrobe.filter(function (i) { return !i.isStarter && !i.dirty && i.category === cat && i.formalities.indexOf(currentFormality) !== -1; });
+      if (real.length > 0) return real;
+      var hasReal = wardrobe.some(function (i) { return !i.isStarter && i.category === cat; });
+      if (hasReal) return [];
+      return wardrobe.filter(function (i) { return i.isStarter && i.category === cat && i.formalities.indexOf(currentFormality) !== -1; });
+    }
+
+    function renderAll() {
+      document.querySelectorAll('.formality-btn').forEach(function (btn) {
+        var active = btn.dataset.formality === currentFormality;
+        btn.classList.toggle('bg-white', active);
+        btn.classList.toggle('text-slate-900', active);
+        btn.classList.toggle('shadow-sm', active);
+        btn.classList.toggle('text-slate-500', !active);
+      });
+
+      ['top', 'pants', 'shoes'].forEach(function (cat) {
+        var box = document.getElementById('slot-' + cat).querySelector('.slot-content');
+        var list = getCleanItemsFor(cat);
+        if (list.length === 0) {
+          box.innerHTML = '<div class="w-28 h-28 rounded-full border-2 border-dashed border-slate-300 flex items-center justify-center text-slate-400 text-xs font-medium">+ ' + cat + '</div>';
+          return;
+        }
+        if (currentIndices[cat] >= list.length) currentIndices[cat] = 0;
+        box.innerHTML = '<img src="' + list[currentIndices[cat]].image + '" alt="" class="cutout-img" />';
+      });
+
+      var dirtyCount = wardrobe.filter(function (i) { return !i.isStarter && i.dirty; }).length;
+      var badge = document.getElementById('laundryBadge');
+      badge.textContent = String(dirtyCount);
+      badge.classList.toggle('hidden', dirtyCount === 0);
+    }
+
+    function nextItem(cat) {
+      var list = getCleanItemsFor(cat);
+      if (list.length <= 1) { showToast('No other ' + cat + ' in ' + currentFormality); return; }
+      currentIndices[cat] = (currentIndices[cat] + 1) % list.length;
+      renderAll();
+    }
+
+    function sendToLaundry(cat) {
+      var list = getCleanItemsFor(cat);
+      if (!list.length) return;
+      var item = list[currentIndices[cat]];
+      if (item.isStarter) { showToast('Add real photos to use laundry'); return; }
+      item.dirty = true;
+      putItem(item).then(function () { showToast('Sent to washing machine'); renderAll(); });
+    }
+
+    function attachSwipe(cat) {
+      var el = document.getElementById('slot-' + cat);
+      var sx = 0, dx = 0, down = false;
+      el.addEventListener('pointerdown', function (e) { sx = e.clientX; dx = 0; down = true; el.setPointerCapture(e.pointerId); });
+      el.addEventListener('pointermove', function (e) {
+        if (!down) return;
+        dx = e.clientX - sx;
+        var img = el.querySelector('.cutout-img');
+        if (img) { img.style.transition = 'none'; img.style.transform = 'translateX(' + dx + 'px) rotate(' + (dx * 0.05) + 'deg)'; }
+      });
+      function finish() {
+        if (!down) return;
+        down = false;
+        var img = el.querySelector('.cutout-img');
+        if (img) { img.style.transition = 'transform 0.25s ease'; img.style.transform = 'translateX(0) rotate(0)'; }
+        if (dx > 55 || Math.abs(dx) < 10) nextItem(cat);
+        else if (dx < -55) sendToLaundry(cat);
+      }
+      el.addEventListener('pointerup', finish);
+      el.addEventListener('pointercancel', finish);
+    }
+
+    function updateTaggingUI() {
+      var cur = taggingQueue[queueIndex];
+      if (!cur) return;
+      document.getElementById('tagProgressText').textContent = 'Photo ' + (queueIndex + 1) + ' of ' + taggingQueue.length;
+      document.getElementById('tagProgressBar').style.width = (((queueIndex + 1) / taggingQueue.length) * 100) + '%';
+      document.getElementById('tagPreviewImg').src = cur.processed || cur.preview;
+      document.getElementById('bgRemoveBadge').classList.toggle('hidden', !cur.processing);
+
+      document.querySelectorAll('.tag-cat-btn').forEach(function (b) {
+        var sel = cur.category === b.dataset.cat;
+        b.classList.toggle('bg-slate-900', sel); b.classList.toggle('text-white', sel);
+      });
+      document.querySelectorAll('.tag-form-btn').forEach(function (b) {
+        var sel = cur.formalities.indexOf(b.dataset.form) !== -1;
+        b.classList.toggle('bg-slate-900', sel); b.classList.toggle('text-white', sel);
+      });
+
+      var saveBtn = document.getElementById('saveTagBtn');
+      saveBtn.disabled = !cur.category || cur.formalities.length === 0 || cur.processing;
+      saveBtn.textContent = queueIndex === taggingQueue.length - 1 ? 'Save & Finish' : 'Save & Next';
+    }
+
+    function nextInQueue() {
+      if (queueIndex + 1 < taggingQueue.length) { queueIndex++; updateTaggingUI(); }
+      else { taggingQueue = []; queueIndex = 0; document.getElementById('taggingModal').classList.add('hidden'); renderAll(); }
+    }
+
+    document.querySelectorAll('.formality-btn').forEach(function (b) {
+      b.addEventListener('click', function () { currentFormality = b.dataset.formality; currentIndices = { top: 0, pants: 0, shoes: 0 }; renderAll(); });
+    });
+    ['top', 'pants', 'shoes'].forEach(attachSwipe);
+
+    document.getElementById('shuffleBtn').addEventListener('click', function () {
+      ['top', 'pants', 'shoes'].forEach(function (cat) {
+        var list = getCleanItemsFor(cat);
+        if (list.length > 1) currentIndices[cat] = (currentIndices[cat] + 1 + Math.floor(Math.random() * (list.length - 1))) % list.length;
+      });
+      renderAll();
+    });
+
+    var fileInput = document.getElementById('fileInput');
+    document.getElementById('addBtn').addEventListener('click', function () { fileInput.value = ''; fileInput.click(); });
+    fileInput.addEventListener('change', function (e) {
+      var files = Array.prototype.slice.call(e.target.files || []);
+      if (!files.length) return;
+      taggingQueue = files.map(function (f, i) {
+        return { id: 'item-' + Date.now() + '-' + i, file: f, preview: URL.createObjectURL(f), processed: null, processing: true, category: null, formalities: [] };
+      });
+      queueIndex = 0;
+      document.getElementById('taggingModal').classList.remove('hidden');
+      updateTaggingUI();
+      taggingQueue.forEach(function (entry, idx) {
+        processFile(entry.file).then(function (dataUrl) {
+          entry.processed = dataUrl; entry.processing = false;
+          if (queueIndex === idx) updateTaggingUI();
+        });
+      });
+    });
+
+    document.querySelectorAll('.tag-cat-btn').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var cur = taggingQueue[queueIndex];
+        cur.category = cur.category === b.dataset.cat ? null : b.dataset.cat;
+        updateTaggingUI();
+      });
+    });
+    document.querySelectorAll('.tag-form-btn').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var cur = taggingQueue[queueIndex], f = b.dataset.form, idx = cur.formalities.indexOf(f);
+        if (idx !== -1) cur.formalities.splice(idx, 1); else cur.formalities.push(f);
+        updateTaggingUI();
+      });
+    });
+    document.getElementById('saveTagBtn').addEventListener('click', function () {
+      var cur = taggingQueue[queueIndex];
+      var item = { id: cur.id, category: cur.category, formalities: cur.formalities.slice(), image: cur.processed || cur.preview, dirty: false, isStarter: false };
+      putItem(item).then(function () { wardrobe.push(item); nextInQueue(); });
+    });
+    document.getElementById('skipPhotoBtn').addEventListener('click', nextInQueue);
+    document.getElementById('cancelQueueBtn').addEventListener('click', function () { taggingQueue = []; document.getElementById('taggingModal').classList.add('hidden'); renderAll(); });
+
+    document.getElementById('laundryBtn').addEventListener('click', function () {
+      var dirty = wardrobe.filter(function (i) { return !i.isStarter && i.dirty; });
+      var grid = document.getElementById('laundryGrid');
+      document.getElementById('washAllBtn').disabled = dirty.length === 0;
+      grid.innerHTML = dirty.length ? dirty.map(function (i) { return '<div class="aspect-square rounded-2xl bg-slate-100 p-2 flex items-center justify-center"><img src="' + i.image + '" class="w-full h-full object-contain"/></div>'; }).join('') : '<div class="col-span-3 text-center text-xs text-slate-400 py-10">Washing machine is empty</div>';
+      document.getElementById('laundryModal').classList.remove('hidden');
+    });
+    document.getElementById('closeLaundryBtn').addEventListener('click', function () { document.getElementById('laundryModal').classList.add('hidden'); });
+    document.getElementById('washAllBtn').addEventListener('click', function () {
+      var dirty = wardrobe.filter(function (i) { return !i.isStarter && i.dirty; });
+      Promise.all(dirty.map(function (i) { i.dirty = false; return putItem(i); })).then(function () {
+        document.getElementById('laundryModal').classList.add('hidden'); renderAll(); showToast('All clothes washed!');
+      });
+    });
+
+    document.getElementById('closetBtn').addEventListener('click', function () {
+      var real = wardrobe.filter(function (i) { return !i.isStarter; });
+      var grid = document.getElementById('closetGrid');
+      grid.innerHTML = real.length ? real.map(function (i) {
+        return '<div class="aspect-square rounded-2xl bg-slate-100 p-2 flex items-center justify-center relative"><img src="' + i.image + '" class="w-full h-full object-contain"/><button type="button" data-id="' + i.id + '" class="del-btn absolute top-1 right-1 w-6 h-6 rounded-full bg-rose-500 text-white text-xs font-bold">&times;</button></div>';
+      }).join('') : '<div class="col-span-3 text-center text-xs text-slate-400 py-10">No clothes added yet</div>';
+      grid.querySelectorAll('.del-btn').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var id = b.dataset.id;
+          deleteItemFromDB(id).then(function () { wardrobe = wardrobe.filter(function (w) { return w.id !== id; }); document.getElementById('closetBtn').click(); renderAll(); });
+        });
+      });
+      document.getElementById('closetModal').classList.remove('hidden');
+    });
+    document.getElementById('closeClosetBtn').addEventListener('click', function () { document.getElementById('closetModal').classList.add('hidden'); });
+
+    getAllItems().then(function (saved) { wardrobe = STARTER_ITEMS.concat(saved); renderAll(); }).catch(function () { wardrobe = STARTER_ITEMS.slice(); renderAll(); });
+    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js').catch(function () {}); }
+  </script>
+</body>
+</html>
