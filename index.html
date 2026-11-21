@@ -139,7 +139,7 @@
         <button type="button" data-day="6" class="day-setup-btn py-3 px-4 rounded-2xl bg-white border border-slate-200 text-sm font-semibold text-slate-700 transition">Dissabte</button>
         <button type="button" data-day="0" class="day-setup-btn col-span-2 py-3 px-4 rounded-2xl bg-white border border-slate-200 text-sm font-semibold text-slate-700 text-center transition">Diumenge</button>
       </div>
-      <button type="button" id="saveLaundryDaysBtn" disabled class="w-full py-3.5 rounded-2xl bg-sky-600 text-white text-sm font-semibold disabled:opacity-35 shadow-sm transition">
+      <button type="button" id="saveLaundryDaysBtn" disabled class="w-full py-3.5 rounded-2xl bg-slate-900 text-white text-sm font-semibold disabled:opacity-35 shadow-sm transition">
         Continuar
       </button>
     </div>
@@ -305,7 +305,7 @@
   <div id="laundryModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-3">
     <div class="bg-white w-full max-w-md rounded-3xl p-5 shadow-2xl flex flex-col gap-4 max-h-[85dvh]">
       <div class="flex items-center justify-between gap-2">
-        <div class="flex items-center gap-2 min-w-0">
+        <div class="flex items-center gap-2 min-w-0 flex-1">
           <h2 id="laundryTitle" class="text-base font-bold text-slate-900 truncate">Rentadora</h2>
           <button type="button" id="editLaundryDaysBtn" aria-label="Dies de bugada" title="Dies de bugada" class="w-7 h-7 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center shrink-0 active:scale-95 transition">
             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -313,10 +313,10 @@
             </svg>
           </button>
         </div>
-        <div class="flex items-center gap-1.5 shrink-0">
-          <button type="button" id="selectAllLaundryBtn" class="hidden h-8 px-2.5 rounded-full bg-white text-slate-900 border border-slate-200 shadow-sm text-xs font-semibold active:scale-95 transition">Tot</button>
-          <button type="button" id="cancelLaundrySelectBtn" class="hidden h-8 px-2.5 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold active:scale-95 transition">Desmarcar</button>
-          <button type="button" id="closeLaundryBtn" class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 font-bold shrink-0">&times;</button>
+        <div class="flex items-center gap-1 shrink-0">
+          <button type="button" id="selectAllLaundryBtn" class="hidden h-8 px-2 rounded-full bg-white text-slate-900 border border-slate-200 shadow-sm text-xs font-semibold active:scale-95 transition">Tot</button>
+          <button type="button" id="cancelLaundrySelectBtn" class="hidden h-8 px-2 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold active:scale-95 transition">Desmarcar</button>
+          <button type="button" id="closeLaundryBtn" aria-label="Tancar" class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 font-bold flex items-center justify-center shrink-0">&times;</button>
         </div>
       </div>
       <div id="laundryGrid" class="flex-1 overflow-y-auto grid grid-cols-3 gap-3 min-h-[120px] p-1"></div>
@@ -334,14 +334,14 @@
   <div id="closetModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-3">
     <div class="bg-white w-full max-w-md rounded-3xl p-5 shadow-2xl flex flex-col gap-3 max-h-[86dvh]">
       <div class="flex items-center justify-between gap-2">
-        <h2 id="closetTitle" class="text-base font-bold text-slate-900 truncate">Armari</h2>
-        <div class="flex items-center gap-1.5 shrink-0">
+        <h2 id="closetTitle" class="text-base font-bold text-slate-900 truncate min-w-0 flex-1">Armari</h2>
+        <div class="flex items-center gap-1 shrink-0">
           <button type="button" id="addInsideClosetBtn" class="h-8 px-3 rounded-full bg-slate-900 text-white text-xs font-semibold flex items-center gap-1 active:scale-95 transition">
             <span class="text-sm leading-none">+</span> Afegir roba
           </button>
-          <button type="button" id="selectAllClosetBtn" class="hidden h-8 px-2.5 rounded-full bg-white text-slate-900 border border-slate-200 shadow-sm text-xs font-semibold active:scale-95 transition">Tot</button>
-          <button type="button" id="cancelClosetSelectBtn" class="hidden h-8 px-2.5 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold active:scale-95 transition">Desmarcar</button>
-          <button type="button" id="closeClosetBtn" class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 font-bold shrink-0">&times;</button>
+          <button type="button" id="selectAllClosetBtn" class="hidden h-8 px-2 rounded-full bg-white text-slate-900 border border-slate-200 shadow-sm text-xs font-semibold active:scale-95 transition">Tot</button>
+          <button type="button" id="cancelClosetSelectBtn" class="hidden h-8 px-2 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold active:scale-95 transition">Desmarcar</button>
+          <button type="button" id="closeClosetBtn" aria-label="Tancar" class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 font-bold flex items-center justify-center shrink-0">&times;</button>
         </div>
       </div>
 
