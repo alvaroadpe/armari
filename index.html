@@ -20,36 +20,36 @@
       ctx.fillStyle = '#F5F5F7';
       ctx.fillRect(0, 0, 512, 512);
 
-      // 1. Hanger (v9 position, drawn behind the t-shirt)
+      // 1. Hanger seated snugly right behind the t-shirt collar
       ctx.strokeStyle = '#0F172A';
       ctx.lineWidth = 14;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
 
       ctx.beginPath();
-      ctx.arc(256, 62, 22, Math.PI * 0.9, Math.PI * 2.15);
-      ctx.quadraticCurveTo(278, 92, 256, 102);
-      ctx.lineTo(256, 126);
-      ctx.moveTo(256, 126);
-      ctx.lineTo(156, 174);
-      ctx.moveTo(256, 126);
-      ctx.lineTo(356, 174);
+      ctx.arc(256, 92, 22, Math.PI * 0.9, Math.PI * 2.15);
+      ctx.quadraticCurveTo(278, 120, 256, 130);
+      ctx.lineTo(256, 152);
+      ctx.moveTo(256, 152);
+      ctx.lineTo(156, 192);
+      ctx.moveTo(256, 152);
+      ctx.lineTo(356, 192);
       ctx.stroke();
 
       // 2. T-shirt on top with solid white fill
       ctx.beginPath();
-      ctx.moveTo(202, 166);
-      ctx.quadraticCurveTo(256, 202, 310, 166);
-      ctx.lineTo(372, 184);
-      ctx.lineTo(432, 260);
-      ctx.lineTo(380, 290);
-      ctx.lineTo(348, 246);
-      ctx.lineTo(348, 430);
-      ctx.lineTo(164, 430);
-      ctx.lineTo(164, 246);
-      ctx.lineTo(132, 290);
-      ctx.lineTo(80, 260);
-      ctx.lineTo(140, 184);
+      ctx.moveTo(202, 180);
+      ctx.quadraticCurveTo(256, 216, 310, 180);
+      ctx.lineTo(372, 198);
+      ctx.lineTo(432, 274);
+      ctx.lineTo(380, 304);
+      ctx.lineTo(348, 260);
+      ctx.lineTo(348, 444);
+      ctx.lineTo(164, 444);
+      ctx.lineTo(164, 260);
+      ctx.lineTo(132, 304);
+      ctx.lineTo(80, 274);
+      ctx.lineTo(140, 198);
       ctx.closePath();
 
       ctx.fillStyle = '#FFFFFF';
@@ -58,17 +58,17 @@
 
       // 3. Horizontal square, triangle, and circle inside
       ctx.lineWidth = 10;
-      ctx.strokeRect(194, 288, 30, 30);
+      ctx.strokeRect(194, 302, 30, 30);
 
       ctx.beginPath();
-      ctx.moveTo(256, 287);
-      ctx.lineTo(273, 318);
-      ctx.lineTo(239, 318);
+      ctx.moveTo(256, 301);
+      ctx.lineTo(273, 332);
+      ctx.lineTo(239, 332);
       ctx.closePath();
       ctx.stroke();
 
       ctx.beginPath();
-      ctx.arc(303, 303, 15, 0, Math.PI * 2);
+      ctx.arc(303, 317, 15, 0, Math.PI * 2);
       ctx.stroke();
 
       var iconUrl = c.toDataURL('image/png');
@@ -190,7 +190,7 @@
   </div>
 
   <!-- Barra superior -->
-  <header class="safe-top px-4 pb-1 flex items-center justify-between gap-2 z-10">
+  <header class="safe-top px-4 pb-1 flex items-center justify-between gap-2 z-40">
     <div id="formalityBar" class="flex bg-black/5 p-1 rounded-full flex-1 max-w-[270px]">
       <button type="button" data-formality="casual" class="formality-btn flex-1 py-1.5 text-xs font-semibold rounded-full transition-all">Informal</button>
       <button type="button" data-formality="semiformal" class="formality-btn flex-1 py-1.5 text-xs font-semibold rounded-full transition-all">Semiformal</button>
@@ -198,13 +198,16 @@
     </div>
 
     <div class="flex items-center gap-2">
-      <!-- Rentadora -->
-      <button type="button" id="laundryBtn" aria-label="Rentadora" class="relative w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center active:scale-95 transition">
-        <svg class="w-5 h-5 text-slate-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="2" width="18" height="20" rx="3"/><line x1="3" y1="7" x2="21" y2="7"/><circle cx="7" cy="4.5" r="0.8" fill="currentColor"/><circle cx="10" cy="4.5" r="0.8" fill="currentColor"/><circle cx="12" cy="14" r="4.5"/><path d="M9.5 14c1.2-1 2.3-1 3.5 0s2.3 1 3.5 0"/>
-        </svg>
-        <span id="laundryBadge" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center">0</span>
-      </button>
+      <!-- Rentadora + avís just a sota -->
+      <div class="relative">
+        <button type="button" id="laundryBtn" aria-label="Rentadora" class="relative w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center active:scale-95 transition">
+          <svg class="w-5 h-5 text-slate-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="2" width="18" height="20" rx="3"/><line x1="3" y1="7" x2="21" y2="7"/><circle cx="7" cy="4.5" r="0.8" fill="currentColor"/><circle cx="10" cy="4.5" r="0.8" fill="currentColor"/><circle cx="12" cy="14" r="4.5"/><path d="M9.5 14c1.2-1 2.3-1 3.5 0s2.3 1 3.5 0"/>
+          </svg>
+          <span id="laundryBadge" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center">0</span>
+        </button>
+        <div id="toastMsg" class="pointer-events-none opacity-0 transition-opacity duration-300 absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-slate-900/90 text-white text-[11px] font-medium px-3 py-1.5 rounded-full shadow-lg z-40 whitespace-nowrap">Enviat a la rentadora</div>
+      </div>
 
       <!-- Armari -->
       <button type="button" id="closetBtn" aria-label="Armari" class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center active:scale-95 transition">
@@ -225,13 +228,10 @@
       <div id="slot-shoes" data-category="shoes" class="outfit-slot z-10 -mt-1.5"><div class="slot-content flex items-center justify-center"></div></div>
     </div>
 
-    <!-- Conjunt sencer sorpresa (1% de probabilitat) -->
+    <!-- Conjunt sencer sorpresa (1% de probabilitat, integrat dins l'app) -->
     <div id="easterEggSlot" class="hidden flex-1 w-full flex items-center justify-center cursor-pointer">
-      <img src="./duck-onesie.png" alt="" class="cutout-img cutout-onesie" />
+      <img id="duckOnesieImg" src="./duck-onesie.png" alt="Pijama d'ànec" class="cutout-img cutout-onesie" />
     </div>
-
-    <!-- Avís inferior -->
-    <div id="toastMsg" class="pointer-events-none opacity-0 transition-opacity duration-300 fixed bottom-24 left-1/2 -translate-x-1/2 bg-slate-900/90 text-white text-xs font-medium px-4 py-2 rounded-full shadow-lg z-40 whitespace-nowrap"></div>
   </main>
 
   <!-- Barra inferior -->
@@ -400,6 +400,46 @@
       pants: 'tocarà anar despullada avui...',
       shoes: 'modo platja'
     };
+
+    // Pijama d'ànec incrustat perquè sempre estigui disponible fora de línia i en descarregar l'app
+    var DUCK_ONESIE_DATA_URL = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 760" width="360" height="760">' +
+        '<!-- Peus -->' +
+        '<path d="M108 696 C100 724 88 742 108 748 C128 752 142 738 142 708 Z" fill="#FDBA74"/>' +
+        '<path d="M252 696 C260 724 272 742 252 748 C232 752 218 738 218 708 Z" fill="#FDBA74"/>' +
+        '<!-- Cos i cames del pijama d\'ànec -->' +
+        '<path d="M138 158 C102 172 76 226 66 300 C58 346 84 366 106 346 L112 310 C102 418 86 558 92 696 C94 708 148 708 152 694 L176 520 L184 520 L208 694 C212 708 266 708 268 696 C274 558 258 418 248 310 L254 346 C276 366 302 346 294 300 C284 226 258 172 222 158 Z" fill="#FDE047" stroke="#EAB308" stroke-width="3" stroke-linejoin="round"/>' +
+        '<!-- Plecs suaus de tela -->' +
+        '<path d="M114 252 L112 312 M246 252 L248 312" stroke="#EAB308" stroke-width="3" stroke-linecap="round"/>' +
+        '<!-- Panxa blanca ovalada -->' +
+        '<ellipse cx="180" cy="346" rx="56" ry="152" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="2"/>' +
+        '<line x1="180" y1="196" x2="180" y2="496" stroke="#E2E8F0" stroke-width="2.5"/>' +
+        '<circle cx="180" cy="240" r="3" fill="#CBD5E1"/><circle cx="180" cy="295" r="3" fill="#CBD5E1"/><circle cx="180" cy="350" r="3" fill="#CBD5E1"/><circle cx="180" cy="405" r="3" fill="#CBD5E1"/><circle cx="180" cy="460" r="3" fill="#CBD5E1"/>' +
+        '<!-- Caputxa d\'ànec -->' +
+        '<path d="M118 118 C116 56 146 22 180 22 C214 22 244 56 242 118 C242 150 218 172 180 172 C142 172 118 150 118 118 Z" fill="#FDE047" stroke="#EAB308" stroke-width="3"/>' +
+        '<path d="M164 24 C170 8 190 8 196 24" fill="#FDE047" stroke="#EAB308" stroke-width="3"/>' +
+        '<!-- Ulls de la caputxa -->' +
+        '<ellipse cx="158" cy="74" rx="13" ry="18" fill="#FFFFFF" stroke="#0F172A" stroke-width="3"/>' +
+        '<ellipse cx="202" cy="74" rx="13" ry="18" fill="#FFFFFF" stroke="#0F172A" stroke-width="3"/>' +
+        '<ellipse cx="160" cy="77" rx="7" ry="10" fill="#0F172A"/>' +
+        '<ellipse cx="200" cy="77" rx="7" ry="10" fill="#0F172A"/>' +
+        '<circle cx="163" cy="72" r="2.8" fill="#FFFFFF"/>' +
+        '<circle cx="203" cy="72" r="2.8" fill="#FFFFFF"/>' +
+        '<!-- Bec taronja -->' +
+        '<path d="M148 104 C148 92 212 92 212 104 L218 138 C218 154 142 154 142 138 Z" fill="#FB923C" stroke="#EA580C" stroke-width="3" stroke-linejoin="round"/>' +
+        '<path d="M148 124 Q180 132 212 124" fill="none" stroke="#EA580C" stroke-width="2.5" stroke-linecap="round"/>' +
+      '</svg>'
+    );
+
+    (function () {
+      var duckImg = document.getElementById('duckOnesieImg');
+      if (duckImg) {
+        duckImg.onerror = function () {
+          duckImg.onerror = null;
+          duckImg.src = DUCK_ONESIE_DATA_URL;
+        };
+      }
+    })();
 
     function openDB() {
       return new Promise(function (resolve, reject) {
@@ -585,13 +625,9 @@
 
     document.getElementById('saveLaundryDaysBtn').addEventListener('click', function () {
       if (!selectedSetupDays.length) return;
-      var wasEditingFromLaundry = !document.getElementById('cancelLaundryDaysBtn').classList.contains('hidden');
       localStorage.setItem(STORAGE_LAUNDRY_DAYS, JSON.stringify(selectedSetupDays));
       localStorage.setItem(STORAGE_LAST_CHECK, getTodayDateString());
       document.getElementById('laundrySetupOverlay').classList.add('hidden');
-      if (wasEditingFromLaundry) {
-        showToast('Dies de bugada desats');
-      }
     });
 
     document.getElementById('confirmLaundryDoneBtn').addEventListener('click', function () {
@@ -864,9 +900,9 @@
     }
 
     var toastTimer = null;
-    function showToast(msg) {
+    function showLaundrySentToast() {
       var el = document.getElementById('toastMsg');
-      el.textContent = msg || 'Enviat a la rentadora';
+      el.textContent = 'Enviat a la rentadora';
       el.style.opacity = '1';
       clearTimeout(toastTimer);
       toastTimer = setTimeout(function () { el.style.opacity = '0'; }, 1600);
@@ -923,7 +959,7 @@
 
     function nextItem(cat) {
       if (lockedSlots[cat]) {
-        showToast('Bloquejat · Llisca a l\'esquerra per desbloquejar');
+        setSlotLock(cat, false);
         return;
       }
       var list = getCleanItemsFor(cat);
@@ -944,12 +980,8 @@
     function setSlotLock(cat, shouldLock) {
       var list = getCleanItemsFor(cat);
       if (!list.length) return;
-      if (lockedSlots[cat] === shouldLock) {
-        showToast(shouldLock ? 'Ja està bloquejada' : 'Ja està desbloquejada');
-        return;
-      }
+      if (lockedSlots[cat] === shouldLock) return;
       lockedSlots[cat] = shouldLock;
-      showToast(shouldLock ? 'Peça bloquejada' : 'Peça desbloquejada');
       renderAll();
     }
 
@@ -960,33 +992,25 @@
       if (item.isStarter) return;
       lockedSlots[cat] = false;
       item.dirty = true;
-      putItem(item).then(function () { showToast('Enviat a la rentadora'); renderAll(); });
+      putItem(item).then(function () { showLaundrySentToast(); renderAll(); });
     }
 
     function attachSwipe(cat) {
       var el = document.getElementById('slot-' + cat);
-      var sx = 0, sy = 0, dx = 0, dy = 0, down = false;
+      var sx = 0, dx = 0, down = false;
       el.addEventListener('pointerdown', function (e) {
         sx = e.clientX;
-        sy = e.clientY;
         dx = 0;
-        dy = 0;
         down = true;
         el.setPointerCapture(e.pointerId);
       });
       el.addEventListener('pointermove', function (e) {
         if (!down) return;
         dx = e.clientX - sx;
-        dy = e.clientY - sy;
         var img = el.querySelector('.cutout-img');
         if (!img) return;
         img.style.transition = 'none';
-        if (dy < 0 && Math.abs(dy) > Math.abs(dx)) {
-          var scale = Math.max(0.85, 1 + dy * 0.0008);
-          img.style.transform = 'translateY(' + dy + 'px) scale(' + scale + ')';
-        } else {
-          img.style.transform = 'translateX(' + dx + 'px) rotate(' + (dx * 0.05) + 'deg)';
-        }
+        img.style.transform = 'translateX(' + dx + 'px) rotate(' + (dx * 0.05) + 'deg)';
       });
       function finish() {
         if (!down) return;
@@ -994,16 +1018,24 @@
         var img = el.querySelector('.cutout-img');
         if (img) {
           img.style.transition = 'transform 0.25s ease';
-          img.style.transform = 'translate(0, 0) rotate(0) scale(1)';
+          img.style.transform = 'translateX(0) rotate(0)';
         }
-        if (Math.abs(dx) < 12 && Math.abs(dy) < 12) {
-          nextItem(cat);
-        } else if (dy < -55 && Math.abs(dy) > Math.abs(dx)) {
-          sendToLaundry(cat);
-        } else if (dx > 50 && Math.abs(dx) >= Math.abs(dy)) {
-          setSlotLock(cat, true);
-        } else if (dx < -50 && Math.abs(dx) >= Math.abs(dy)) {
-          setSlotLock(cat, false);
+        var isTap = Math.abs(dx) < 12;
+        var isRight = dx > 50;
+        var isLeft = dx < -50;
+
+        if (lockedSlots[cat]) {
+          if (isTap || isRight || isLeft) {
+            setSlotLock(cat, false);
+          }
+        } else {
+          if (isTap) {
+            nextItem(cat);
+          } else if (isRight) {
+            setSlotLock(cat, true);
+          } else if (isLeft) {
+            sendToLaundry(cat);
+          }
         }
       }
       el.addEventListener('pointerup', finish);
@@ -1340,7 +1372,6 @@
         }
         existing.cutoutState = cutoutState;
         putItem(existing).then(function () {
-          showToast('Canvis desats');
           nextInQueue();
         });
         return;
@@ -1435,7 +1466,7 @@
         if (!document.getElementById('closetModal').classList.contains('hidden')) renderClosetModal();
         if (!document.getElementById('laundryModal').classList.contains('hidden')) renderLaundryModal();
         renderAll();
-        showToast(item.dirty ? 'Enviat a la rentadora' : 'Tret de la rentadora');
+        if (item.dirty) showLaundrySentToast();
       });
     });
 
@@ -1564,7 +1595,6 @@
       Promise.all(targets.map(function (i) { i.dirty = false; return putItem(i); })).then(function () {
         renderLaundryModal();
         renderAll();
-        showToast('Roba neta');
       });
     });
 
@@ -1704,7 +1734,7 @@
       })).then(function () {
         renderClosetModal();
         renderAll();
-        showToast(nextDirtyState ? 'Enviat a la rentadora' : 'Tret de la rentadora');
+        if (nextDirtyState) showLaundrySentToast();
       });
     });
 

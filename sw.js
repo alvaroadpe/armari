@@ -1,4 +1,4 @@
-const CACHE_NAME = 'armari-v18';
+const CACHE_NAME = 'armari-v20';
 const CORE_ASSETS = ['./', './index.html'];
 
 self.addEventListener('install', (e) => {
