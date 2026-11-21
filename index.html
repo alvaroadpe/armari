@@ -314,9 +314,9 @@
           </button>
         </div>
         <div class="flex items-center gap-1.5 shrink-0">
-          <button type="button" id="selectAllLaundryBtn" class="hidden h-8 px-3 rounded-full bg-white text-slate-900 border border-slate-200 shadow-sm text-xs font-semibold active:scale-95 transition">Tot</button>
-          <button type="button" id="cancelLaundrySelectBtn" class="hidden h-8 px-3 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold active:scale-95 transition">Desmarcar</button>
-          <button type="button" id="closeLaundryBtn" class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 font-bold">&times;</button>
+          <button type="button" id="selectAllLaundryBtn" class="hidden h-8 px-2.5 rounded-full bg-white text-slate-900 border border-slate-200 shadow-sm text-xs font-semibold active:scale-95 transition">Tot</button>
+          <button type="button" id="cancelLaundrySelectBtn" class="hidden h-8 px-2.5 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold active:scale-95 transition">Desmarcar</button>
+          <button type="button" id="closeLaundryBtn" class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 font-bold shrink-0">&times;</button>
         </div>
       </div>
       <div id="laundryGrid" class="flex-1 overflow-y-auto grid grid-cols-3 gap-3 min-h-[120px] p-1"></div>
@@ -339,9 +339,9 @@
           <button type="button" id="addInsideClosetBtn" class="h-8 px-3 rounded-full bg-slate-900 text-white text-xs font-semibold flex items-center gap-1 active:scale-95 transition">
             <span class="text-sm leading-none">+</span> Afegir roba
           </button>
-          <button type="button" id="selectAllClosetBtn" class="hidden h-8 px-3 rounded-full bg-white text-slate-900 border border-slate-200 shadow-sm text-xs font-semibold active:scale-95 transition">Tot</button>
-          <button type="button" id="cancelClosetSelectBtn" class="hidden h-8 px-3 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold active:scale-95 transition">Desmarcar</button>
-          <button type="button" id="closeClosetBtn" class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 font-bold">&times;</button>
+          <button type="button" id="selectAllClosetBtn" class="hidden h-8 px-2.5 rounded-full bg-white text-slate-900 border border-slate-200 shadow-sm text-xs font-semibold active:scale-95 transition">Tot</button>
+          <button type="button" id="cancelClosetSelectBtn" class="hidden h-8 px-2.5 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold active:scale-95 transition">Desmarcar</button>
+          <button type="button" id="closeClosetBtn" class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 font-bold shrink-0">&times;</button>
         </div>
       </div>
 
@@ -1533,7 +1533,6 @@
       var editDaysBtn = document.getElementById('editLaundryDaysBtn');
       var selectAllBtn = document.getElementById('selectAllLaundryBtn');
       var cancelBtn = document.getElementById('cancelLaundrySelectBtn');
-      var closeBtn = document.getElementById('closeLaundryBtn');
       var normalFooter = document.getElementById('laundryNormalFooter');
       var multiFooter = document.getElementById('laundryMultiFooter');
 
@@ -1542,7 +1541,6 @@
         editDaysBtn.classList.add('hidden');
         selectAllBtn.classList.toggle('hidden', allSelected);
         cancelBtn.classList.remove('hidden');
-        closeBtn.classList.add('hidden');
         normalFooter.classList.add('hidden');
         multiFooter.classList.remove('hidden');
       } else {
@@ -1550,7 +1548,6 @@
         editDaysBtn.classList.remove('hidden');
         selectAllBtn.classList.add('hidden');
         cancelBtn.classList.add('hidden');
-        closeBtn.classList.remove('hidden');
         normalFooter.classList.remove('hidden');
         multiFooter.classList.add('hidden');
         document.getElementById('washAllBtn').disabled = dirty.length === 0;
@@ -1652,14 +1649,12 @@
       var addBtn = document.getElementById('addInsideClosetBtn');
       var selectAllBtn = document.getElementById('selectAllClosetBtn');
       var cancelBtn = document.getElementById('cancelClosetSelectBtn');
-      var closeBtn = document.getElementById('closeClosetBtn');
       var multiFooter = document.getElementById('closetMultiFooter');
       var toggleLaundryBtn = document.getElementById('closetToggleLaundryBtn');
 
       if (hasSelection) {
         titleEl.textContent = selectedItems.length + ' seleccionades';
         addBtn.classList.add('hidden');
-        closeBtn.classList.add('hidden');
         selectAllBtn.classList.toggle('hidden', allSelected);
         cancelBtn.classList.remove('hidden');
         multiFooter.classList.remove('hidden');
@@ -1669,7 +1664,6 @@
       } else {
         titleEl.textContent = 'Armari';
         addBtn.classList.remove('hidden');
-        closeBtn.classList.remove('hidden');
         selectAllBtn.classList.add('hidden');
         cancelBtn.classList.add('hidden');
         multiFooter.classList.add('hidden');
