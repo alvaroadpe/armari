@@ -1,0 +1,8 @@
+{
+  "name": "Armari",
+  "short_name": "Armari",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#F5F5F7",
+  "theme_color": "#F5F5F7"
+}
