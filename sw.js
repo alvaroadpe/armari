@@ -1,4 +1,4 @@
-const CACHE_NAME = 'armari-v24';
+const CACHE_NAME = 'armari-v25';
 const CORE_ASSETS = ['./', './index.html'];
 
 self.addEventListener('install', (e) => {
@@ -22,14 +22,18 @@ self.addEventListener('activate', (e) => {
 
 self.addEventListener('fetch', (e) => {
   e.respondWith(
-    fetch(e.request)
-      .then((res) => {
-        if (res && res.status === 200) {
-          const copy = res.clone();
-          caches.open(CACHE_NAME).then((c) => c.put(e.request, copy));
-        }
-        return res;
-      })
-      .catch(() => caches.match(e.request))
+    caches.match(e.request).then((cached) => {
+      const networkFetch = fetch(e.request)
+        .then((res) => {
+          if (res && res.status === 200) {
+            const copy = res.clone();
+            caches.open(CACHE_NAME).then((c) => c.put(e.request, copy));
+          }
+          return res;
+        })
+        .catch(() => cached);
+
+      return cached || networkFetch;
+    })
   );
 });
